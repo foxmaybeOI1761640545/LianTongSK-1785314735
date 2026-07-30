@@ -116,18 +116,49 @@ function buildAnomalyRecords() {
   for (let index = 0; index < 18; index += 1) {
     const type = anomalyTypes[index % anomalyTypes.length]
     const direction = index % 3 === 1 ? DIRECTIONS.HK_TO_GD : DIRECTIONS.GD_TO_HK
-    const gdBytes = deterministicRange(random, 2, 23) * 1024 ** 3 + deterministicRange(random, 30, 900) * 1024 ** 2
-    const mismatch = type === '流量单位换算异常'
-      ? 1024
-      : 1 + (deterministicRange(random, 6, 27) / 100) * (index % 2 ? -1 : 1)
-    const hkBytes = Math.max(1, Math.round(gdBytes * mismatch))
-    const gdAmount = deterministicRange(random, 72, 328)
-    const differenceAmount = type === '金额偏差'
-      ? deterministicRange(random, 42, 108)
-      : deterministicRange(random, 12, 68)
-    const hkAmount = Math.max(1, gdAmount + (index % 2 ? -differenceAmount : differenceAmount))
+    const actualBytes = deterministicRange(random, 2, 23) * 1024 ** 3 + deterministicRange(random, 30, 900) * 1024 ** 2
+    const unitPrice = deterministicRange(random, 8, 16)
+    const baseAmount = Math.max(12, Math.round((actualBytes / 1024 ** 3) * unitPrice))
+    let gdBytes = actualBytes
+    let hkBytes = actualBytes
+    let gdAmount = baseAmount
+    let hkAmount = baseAmount
+    let ggsn = direction === DIRECTIONS.GD_TO_HK ? 'HK-GGSN-02' : 'GD-GGSN-07'
+
+    if (type === '流量单位换算异常') {
+      hkBytes = actualBytes * 1024
+      hkAmount = Math.round(baseAmount * 1024)
+    } else if (type === '双方流量不一致') {
+      const mismatch = 1 + deterministicRange(random, 7, 22) / 100
+      hkBytes = Math.round(actualBytes * (index % 2 ? 1 / mismatch : mismatch))
+      hkAmount = Math.round((hkBytes / 1024 ** 3) * unitPrice)
+    } else if (type === '漫游方向标识异常') {
+      const drift = 1 + deterministicRange(random, 1, 3) / 100
+      hkBytes = Math.round(actualBytes * drift)
+      hkAmount = baseAmount + deterministicRange(random, 3, 12)
+      ggsn = direction === DIRECTIONS.GD_TO_HK ? 'GD-GGSN-07' : 'HK-GGSN-02'
+    } else if (type === '重复计费') {
+      const duplicatedSide = index % 2 ? 'gd' : 'hk'
+      gdBytes = duplicatedSide === 'gd' ? actualBytes * 2 : actualBytes
+      hkBytes = duplicatedSide === 'hk' ? actualBytes * 2 : actualBytes
+      gdAmount = duplicatedSide === 'gd' ? baseAmount * 2 : baseAmount
+      hkAmount = duplicatedSide === 'hk' ? baseAmount * 2 : baseAmount
+    } else if (type === '金额偏差') {
+      const drift = 1 + deterministicRange(random, -2, 2) / 100
+      hkBytes = Math.round(actualBytes * drift)
+      hkAmount = baseAmount + deterministicRange(random, 42, 108)
+    } else if (type === '话单缺失') {
+      const missingSide = index % 2 ? 'gd' : 'hk'
+      gdBytes = missingSide === 'gd' ? 0 : actualBytes
+      hkBytes = missingSide === 'hk' ? 0 : actualBytes
+      gdAmount = missingSide === 'gd' ? 0 : baseAmount
+      hkAmount = missingSide === 'hk' ? 0 : baseAmount
+    }
+
+    const differenceAmount = Math.abs(gdAmount - hkAmount)
     const profile = anomalyProfiles[type]
-    const riskScore = Math.min(98, 62 + deterministicRange(random, 1, 30) + (type === '流量单位换算异常' ? 5 : 0))
+    const riskBoost = type === '流量单位换算异常' ? 9 : type === '话单缺失' ? 6 : type === '金额偏差' ? 4 : 0
+    const riskScore = Math.min(98, 62 + deterministicRange(random, 1, 26) + riskBoost)
 
     records.push({
       id: `CDR-20260729-${String(index + 1).padStart(4, '0')}`,
@@ -137,7 +168,7 @@ function buildAnomalyRecords() {
       subscriberTier: index % 4 === 0 ? '高价值政企' : index % 3 === 0 ? '高价值个人' : '普通用户',
       homeRegion: direction === DIRECTIONS.GD_TO_HK ? '广东' : '香港',
       visitedRegion: direction === DIRECTIONS.GD_TO_HK ? '香港' : '广东',
-      ggsn: direction === DIRECTIONS.GD_TO_HK ? 'HK-GGSN-02' : 'GD-GGSN-07',
+      ggsn,
       gdBytes,
       hkBytes,
       gdAmount,
