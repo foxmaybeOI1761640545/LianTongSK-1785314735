@@ -65,7 +65,7 @@ jobs:
 
   pages-artifact:
     name: Build Pages artifact
-    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main'
     needs: verify
     runs-on: ubuntu-latest
     permissions:
@@ -91,7 +91,7 @@ jobs:
 
   deploy:
     name: Deploy current branch to Pages
-    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main'
     needs: pages-artifact
     runs-on: ubuntu-latest
     permissions:
@@ -109,6 +109,7 @@ jobs:
 
   remote-smoke:
     name: Verify deployed Pages
+    if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main'
     needs: deploy
     runs-on: ubuntu-latest
     steps:
