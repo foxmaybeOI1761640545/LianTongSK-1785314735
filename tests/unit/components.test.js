@@ -13,6 +13,8 @@ describe('dashboard interactions', () => {
     expect(wrapper.attributes('aria-label')).toContain('异常率：2.80%')
     await wrapper.trigger('click')
     expect(wrapper.emitted('select')).toHaveLength(1)
+    await wrapper.trigger('dblclick')
+    expect(wrapper.emitted('open-detail')).toHaveLength(1)
   })
 
   it('closes the evidence drawer with Escape', async () => {

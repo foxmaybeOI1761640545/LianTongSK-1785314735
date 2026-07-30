@@ -1,11 +1,18 @@
 <script setup>
 defineProps({ records: { type: Array, default: () => [] } })
-defineEmits(['select'])
+defineEmits(['select', 'open-detail'])
 </script>
 
 <template>
   <div class="recent-list" data-testid="recent-anomalies">
-    <button v-for="record in records" :key="record.id" type="button" class="recent-row" @click="$emit('select', record)">
+    <button
+      v-for="record in records"
+      :key="record.id"
+      type="button"
+      class="recent-row"
+      @click="$emit('select', record)"
+      @dblclick.stop="$emit('open-detail', record)"
+    >
       <span :class="['status-dot', record.status === '处理中' ? 'processing' : 'pending']"></span>
       <span class="recent-time">{{ record.time.slice(11, 16) }}</span>
       <span class="recent-content"><strong>{{ record.anomalyType }}</strong><small>{{ record.id }}</small></span>

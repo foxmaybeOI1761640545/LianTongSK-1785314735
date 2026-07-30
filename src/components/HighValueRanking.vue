@@ -1,6 +1,6 @@
 <script setup>
 defineProps({ records: { type: Array, default: () => [] } })
-defineEmits(['select'])
+defineEmits(['select', 'open-detail'])
 
 const directionLabel = (direction) => direction === 'GD_TO_HK' ? '粤 → 港' : '港 → 粤'
 </script>
@@ -14,6 +14,7 @@ const directionLabel = (direction) => direction === 'GD_TO_HK' ? '粤 → 港' :
       class="ranking-row"
       :aria-label="`查看 ${record.id} 异常详情`"
       @click="$emit('select', record)"
+      @dblclick.stop="$emit('open-detail', record)"
     >
       <span :class="['rank-number', { top: index < 3 }]">{{ String(index + 1).padStart(2, '0') }}</span>
       <span class="rank-main">

@@ -7,7 +7,7 @@ const props = defineProps({
   index: { type: Number, default: 0 },
 })
 
-defineEmits(['select'])
+defineEmits(['select', 'open-detail'])
 
 const trendLabel = computed(() => `${props.kpi.trend >= 0 ? '较上期上升' : '较上期下降'} ${Math.abs(props.kpi.trend).toFixed(1)}%`)
 </script>
@@ -20,6 +20,7 @@ const trendLabel = computed(() => `${props.kpi.trend >= 0 ? '较上期上升' : 
     :aria-label="`${kpi.label}：${kpi.displayValue}，${trendLabel}`"
     :data-kpi="kpi.id"
     @click="$emit('select', kpi)"
+    @dblclick.stop="$emit('open-detail', kpi)"
   >
     <span class="kpi-glow"></span>
     <span class="kpi-index">{{ String(index).padStart(2, '0') }}</span>

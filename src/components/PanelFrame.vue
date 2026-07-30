@@ -4,11 +4,18 @@ defineProps({
   eyebrow: { type: String, default: '' },
   active: { type: Boolean, default: false },
   compact: { type: Boolean, default: false },
+  detailId: { type: String, default: '' },
 })
+
+defineEmits(['open-detail'])
 </script>
 
 <template>
-  <section class="panel-frame" :class="{ 'is-active': active, 'is-compact': compact }">
+  <section
+    class="panel-frame"
+    :class="{ 'is-active': active, 'is-compact': compact, 'is-detail-enabled': detailId }"
+    @dblclick.stop="detailId && $emit('open-detail', detailId)"
+  >
     <div class="panel-corner panel-corner--tl"></div>
     <div class="panel-corner panel-corner--br"></div>
     <header class="panel-header">

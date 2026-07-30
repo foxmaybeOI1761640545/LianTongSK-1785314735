@@ -24,6 +24,17 @@ test('links direction filter, risk ranking and evidence drawer', async ({ page }
   await expect(page.getByTestId('cdr-drawer')).toBeHidden()
 })
 
+test('opens and closes route-style detail pages with double click', async ({ page }) => {
+  await page.goto('')
+  await page.getByTestId('kpi-grid').locator('.kpi-card').first().dblclick()
+  await expect(page).toHaveURL(/#\/detail\/kpi-/)
+  await expect(page.getByTestId('detail-route')).toBeVisible()
+  await expect(page.getByText('KPI DRILLDOWN')).toBeVisible()
+  await page.getByTestId('detail-route').dblclick()
+  await expect(page).not.toHaveURL(/#\/detail\//)
+  await expect(page.getByTestId('kpi-grid')).toBeVisible()
+})
+
 test('starts, pauses and resumes guided demo mode', async ({ page }) => {
   await page.goto('')
   await page.getByTestId('tour-start').click()
