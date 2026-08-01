@@ -1,4 +1,4 @@
-name: Verify and Deploy Audit Dashboard
+name: Verify and Deploy Data Insight Dashboard
 
 on:
   push:
@@ -14,7 +14,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: audit-dashboard-${{ github.ref }}
+  group: data-insight-dashboard-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:

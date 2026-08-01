@@ -16,8 +16,11 @@ page.on('requestfailed', (request) => failedRequests.push(`${request.method()} $
 
 try {
   await page.goto(pageUrl, { waitUntil: 'networkidle', timeout: 120000 })
-  await page.getByRole('heading', { name: '粤港一卡双号漫游话单智能稽核驾驶舱' }).waitFor()
-  await page.getByText('演示数据', { exact: true }).waitFor()
+  await page.getByRole('heading', { name: '粤港一卡双号漫游数据洞察驾驶舱' }).waitFor()
+  await page.getByText('真实样本聚合', { exact: true }).waitFor()
+  await page.locator('[data-kpi="completed"]').getByText('31,410', { exact: true }).waitFor()
+  await page.locator('[data-kpi="users"]').getByText('2,177', { exact: true }).waitFor()
+  await page.locator('[data-kpi="concentration"]').getByText('90.44%', { exact: true }).waitFor()
   const kpiCount = await page.locator('[data-testid="kpi-grid"] .kpi-card').count()
   if (kpiCount !== 6) throw new Error(`Expected 6 KPIs, received ${kpiCount}`)
   if ((await page.locator('canvas').count()) < 3) throw new Error('Expected at least 3 ECharts canvases')
