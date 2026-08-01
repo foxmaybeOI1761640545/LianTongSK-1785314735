@@ -1,7 +1,7 @@
-import { MockDataAdapter } from './mockDataAdapter.js'
+import { StaticSampleDataAdapter } from './staticSampleDataAdapter.js'
 import { DataEaseAdapter } from './dataEaseAdapter.js'
 
-const mockAdapter = new MockDataAdapter()
+const staticSampleAdapter = new StaticSampleDataAdapter()
 const dataEaseAdapter = new DataEaseAdapter({
   publicEndpoint: import.meta.env.VITE_DATAEASE_PUBLIC_ENDPOINT,
 })
@@ -15,6 +15,6 @@ export const dashboardDataAdapter = {
         if (import.meta.env.DEV) console.warn('DataEase adapter fallback:', error.message)
       }
     }
-    return mockAdapter.loadDashboardData(filters)
+    return staticSampleAdapter.loadDashboardData(filters)
   },
 }

@@ -1,24 +1,22 @@
 <script setup>
-import { formatCompactCurrency } from '../utils/currency.js'
-
 defineProps({ value: { type: Object, default: () => ({}) } })
 </script>
 
 <template>
   <div class="value-panel" data-testid="value-panel">
     <div class="value-primary">
-      <span class="value-icon">¥</span>
-      <div><small>预计可追回金额</small><strong>{{ formatCompactCurrency(value.recoveredAmount) }}</strong></div>
-      <em>演示测算</em>
+      <span class="value-icon">↑</span>
+      <div><small>Top 10% 用户流量贡献</small><strong>{{ ((value.highValueTrafficShare ?? 0) * 100).toFixed(2) }}%</strong></div>
+      <em>真实聚合</em>
     </div>
     <div class="value-metrics">
-      <div><span>节省人工复核</span><strong>{{ Number(value.manualHoursSaved ?? 0).toLocaleString('zh-CN') }}h</strong></div>
-      <div><span>待处置工单</span><strong>{{ value.pendingCases ?? 0 }}</strong></div>
+      <div><span>潜在流失预警</span><strong>{{ Number(value.churnWarningUsers ?? 0).toLocaleString('zh-CN') }}人</strong></div>
+      <div><span>价值提升候选</span><strong>{{ Number(value.valueGrowthUsers ?? 0).toLocaleString('zh-CN') }}人</strong></div>
     </div>
     <div class="value-action">
       <span>策略建议</span>
-      <p>优先阻断单位换算与高价值差异话单，完成重算后再进入结算批次。</p>
-      <small>规则引擎生成 · 非生产 AI 模型</small>
+      <p>以 {{ Number(value.b2bOpportunityUsers ?? 0).toLocaleString('zh-CN') }} 名 B 端机会用户验证企业版与跨境月卡；各画像为可重叠多标签。</p>
+      <small>报告规则推导 · 需结合套餐与身份数据复核</small>
     </div>
   </div>
 </template>

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { aggregateRows, createKpis, filterDailyRows, groupAnomalies } from '../../src/utils/metrics.js'
+import { aggregateRows, createEvidenceKpis, createKpis, filterDailyRows, groupAnomalies } from '../../src/utils/metrics.js'
 import { formatBytes, trafficDifferencePercent } from '../../src/utils/traffic.js'
 
 const rows = [
@@ -34,6 +34,20 @@ describe('dashboard metric contract', () => {
     const kpis = createKpis(current, previous)
     expect(kpis).toHaveLength(6)
     expect(kpis.map((item) => item.id)).toEqual(['completed', 'traffic', 'anomaly', 'rate', 'difference', 'highValue'])
+  })
+
+  it('creates six evidence-backed KPI definitions without inventing a comparison period', () => {
+    const kpis = createEvidenceKpis({
+      records: 31410,
+      bytes: 23685836196,
+      users: 2177,
+      outOfJulyRecords: 411,
+      top10Count: 218,
+      top10TrafficShare: 0.9044392579485016,
+    })
+    expect(kpis.map((item) => item.id)).toEqual(['completed', 'traffic', 'users', 'crossPeriod', 'highValue', 'concentration'])
+    expect(kpis.find((item) => item.id === 'concentration').displayValue).toBe('90.44%')
+    expect(kpis.every((item) => item.trend === null)).toBe(true)
   })
 
   it('formats traffic and calculates cross-side difference', () => {

@@ -70,6 +70,28 @@ export function createKpis(current, previous) {
   }))
 }
 
+export function createEvidenceKpis(summary) {
+  const specs = [
+    ['completed', '样本话单总量', summary.records, (value) => value.toLocaleString('zh-CN'), '真实聚合｜当前筛选范围内的话单记录数', 'cyan'],
+    ['traffic', '漫游总流量', summary.bytes, formatBytes, '真实聚合｜RG 使用量总量字段求和', 'blue'],
+    ['users', '活跃用户数', summary.users, (value) => value.toLocaleString('zh-CN'), '真实聚合｜计费号码与 IMSI 一对一去重', 'green'],
+    ['crossPeriod', '跨期记录', summary.outOfJulyRecords, (value) => value.toLocaleString('zh-CN'), '规则推导｜事件月份不等于文件标称月份 2026-07', 'red'],
+    ['highValue', 'Top 10% 用户', summary.top10Count, (value) => value.toLocaleString('zh-CN'), '规则推导｜按用户周期流量降序取前 10%', 'indigo'],
+    ['concentration', '头部流量贡献', summary.top10TrafficShare, (value) => `${(value * 100).toFixed(2)}%`, '规则推导｜Top 10% 用户流量 ÷ 总流量', 'amber'],
+  ]
+
+  return specs.map(([id, label, value, formatter, definition, tone]) => ({
+    id,
+    label,
+    value,
+    displayValue: formatter(value),
+    trend: null,
+    trendGood: true,
+    definition,
+    tone,
+  }))
+}
+
 export function groupDaily(rows) {
   const grouped = new Map()
   for (const row of rows) {

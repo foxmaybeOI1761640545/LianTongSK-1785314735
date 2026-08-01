@@ -1,0 +1,744 @@
+{
+  "generatedFrom": "onecard_ps_roam_202607.xlsx",
+  "expectedPeriod": "2026-07",
+  "ranges": {
+    "7": {
+      "startDay": "2026-07-26",
+      "endDay": "2026-08-01",
+      "records": 6409,
+      "bytes": 4827346751,
+      "users": 616,
+      "outOfJulyRecords": 409,
+      "midnightRecords": 6409,
+      "imeiMissingRecords": 6409,
+      "exactDuplicateRows": 1,
+      "strongDuplicatePairs": 1,
+      "highFrequencyLowVolumeUsers": 0,
+      "top10Count": 62,
+      "top10Bytes": 4376587044,
+      "top10TrafficShare": 0.9066237147959956,
+      "topRecords": [
+        {
+          "rank": 1,
+          "bytes": 564869365,
+          "records": 689,
+          "activeDays": 5,
+          "lastDay": "2026-07-31",
+          "weekdayShare": 1,
+          "avgRecordBytes": 819839.4267053701,
+          "trafficShare": 0.11701445828041782
+        },
+        {
+          "rank": 2,
+          "bytes": 287933995,
+          "records": 352,
+          "activeDays": 3,
+          "lastDay": "2026-08-01",
+          "weekdayShare": 0.9971546951237904,
+          "avgRecordBytes": 817994.3039772727,
+          "trafficShare": 0.0596464289498892
+        },
+        {
+          "rank": 3,
+          "bytes": 259902534,
+          "records": 317,
+          "activeDays": 6,
+          "lastDay": "2026-07-31",
+          "weekdayShare": 0.9684542937161206,
+          "avgRecordBytes": 819881.810725552,
+          "trafficShare": 0.053839624001768754
+        },
+        {
+          "rank": 4,
+          "bytes": 238572612,
+          "records": 291,
+          "activeDays": 5,
+          "lastDay": "2026-08-01",
+          "weekdayShare": 0.3608328394375797,
+          "avgRecordBytes": 819837.1546391753,
+          "trafficShare": 0.04942106384849585
+        },
+        {
+          "rank": 5,
+          "bytes": 206600308,
+          "records": 252,
+          "activeDays": 1,
+          "lastDay": "2026-07-26",
+          "weekdayShare": 0,
+          "avgRecordBytes": 819842.4920634921,
+          "trafficShare": 0.042797900929159916
+        },
+        {
+          "rank": 6,
+          "bytes": 195133049,
+          "records": 238,
+          "activeDays": 3,
+          "lastDay": "2026-08-01",
+          "weekdayShare": 0.7394948407739993,
+          "avgRecordBytes": 819886.7605042016,
+          "trafficShare": 0.04042242230881334
+        },
+        {
+          "rank": 7,
+          "bytes": 186123619,
+          "records": 227,
+          "activeDays": 1,
+          "lastDay": "2026-07-29",
+          "weekdayShare": 1,
+          "avgRecordBytes": 819927.8370044053,
+          "trafficShare": 0.038556090664389066
+        },
+        {
+          "rank": 8,
+          "bytes": 145933884,
+          "records": 178,
+          "activeDays": 2,
+          "lastDay": "2026-07-27",
+          "weekdayShare": 0.27527295168817684,
+          "avgRecordBytes": 819853.2808988764,
+          "trafficShare": 0.030230661174229786
+        },
+        {
+          "rank": 9,
+          "bytes": 130369080,
+          "records": 159,
+          "activeDays": 2,
+          "lastDay": "2026-07-29",
+          "weekdayShare": 1,
+          "avgRecordBytes": 819931.320754717,
+          "trafficShare": 0.027006363272535507
+        },
+        {
+          "rank": 10,
+          "bytes": 130352217,
+          "records": 159,
+          "activeDays": 2,
+          "lastDay": "2026-07-30",
+          "weekdayShare": 1,
+          "avgRecordBytes": 819825.2641509434,
+          "trafficShare": 0.027002870049266117
+        }
+      ]
+    },
+    "14": {
+      "startDay": "2026-07-19",
+      "endDay": "2026-08-01",
+      "records": 13409,
+      "bytes": 9996261157,
+      "users": 1241,
+      "outOfJulyRecords": 409,
+      "midnightRecords": 13409,
+      "imeiMissingRecords": 13409,
+      "exactDuplicateRows": 1,
+      "strongDuplicatePairs": 1,
+      "highFrequencyLowVolumeUsers": 1,
+      "top10Count": 125,
+      "top10Bytes": 8929618214,
+      "top10TrafficShare": 0.8932958106788687,
+      "topRecords": [
+        {
+          "rank": 1,
+          "bytes": 615311011,
+          "records": 752,
+          "activeDays": 7,
+          "lastDay": "2026-07-31",
+          "weekdayShare": 0.9427148622893732,
+          "avgRecordBytes": 818232.727393617,
+          "trafficShare": 0.06155411521728013
+        },
+        {
+          "rank": 2,
+          "bytes": 410727510,
+          "records": 501,
+          "activeDays": 11,
+          "lastDay": "2026-08-01",
+          "weekdayShare": 0.47505074349658244,
+          "avgRecordBytes": 819815.3892215568,
+          "trafficShare": 0.04108811320044227
+        },
+        {
+          "rank": 3,
+          "bytes": 381457216,
+          "records": 466,
+          "activeDays": 9,
+          "lastDay": "2026-07-30",
+          "weekdayShare": 0.935530450156696,
+          "avgRecordBytes": 818577.7167381974,
+          "trafficShare": 0.03815998902078304
+        },
+        {
+          "rank": 4,
+          "bytes": 373859544,
+          "records": 456,
+          "activeDays": 12,
+          "lastDay": "2026-07-31",
+          "weekdayShare": 0.951756411493403,
+          "avgRecordBytes": 819867.4210526316,
+          "trafficShare": 0.03739993764950813
+        },
+        {
+          "rank": 5,
+          "bytes": 314797381,
+          "records": 384,
+          "activeDays": 3,
+          "lastDay": "2026-07-27",
+          "weekdayShare": 0.12761113473177213,
+          "avgRecordBytes": 819784.8463541666,
+          "trafficShare": 0.031491512282025506
+        },
+        {
+          "rank": 6,
+          "bytes": 312387038,
+          "records": 382,
+          "activeDays": 3,
+          "lastDay": "2026-07-29",
+          "weekdayShare": 0.5958179641243629,
+          "avgRecordBytes": 817767.1151832461,
+          "trafficShare": 0.031250387829378314
+        },
+        {
+          "rank": 7,
+          "bytes": 287933995,
+          "records": 352,
+          "activeDays": 3,
+          "lastDay": "2026-08-01",
+          "weekdayShare": 0.9971546951237904,
+          "avgRecordBytes": 817994.3039772727,
+          "trafficShare": 0.02880416892653618
+        },
+        {
+          "rank": 8,
+          "bytes": 286962546,
+          "records": 350,
+          "activeDays": 5,
+          "lastDay": "2026-07-24",
+          "weekdayShare": 0.985713222658681,
+          "avgRecordBytes": 819892.9885714286,
+          "trafficShare": 0.02870698769199833
+        },
+        {
+          "rank": 9,
+          "bytes": 219729990,
+          "records": 268,
+          "activeDays": 9,
+          "lastDay": "2026-08-01",
+          "weekdayShare": 0.880600786447039,
+          "avgRecordBytes": 819888.0223880596,
+          "trafficShare": 0.021981217432092744
+        },
+        {
+          "rank": 10,
+          "bytes": 206600308,
+          "records": 252,
+          "activeDays": 1,
+          "lastDay": "2026-07-26",
+          "weekdayShare": 0,
+          "avgRecordBytes": 819842.4920634921,
+          "trafficShare": 0.02066775815028859
+        }
+      ]
+    },
+    "30": {
+      "startDay": "2026-07-03",
+      "endDay": "2026-08-01",
+      "records": 29409,
+      "bytes": 22156812639,
+      "users": 2073,
+      "outOfJulyRecords": 409,
+      "midnightRecords": 29409,
+      "imeiMissingRecords": 29409,
+      "exactDuplicateRows": 3,
+      "strongDuplicatePairs": 3,
+      "highFrequencyLowVolumeUsers": 1,
+      "top10Count": 208,
+      "top10Bytes": 20025336319,
+      "top10TrafficShare": 0.9038004087172622,
+      "topRecords": [
+        {
+          "rank": 1,
+          "bytes": 931157886,
+          "records": 1138,
+          "activeDays": 13,
+          "lastDay": "2026-07-31",
+          "weekdayShare": 0.9101938680246542,
+          "avgRecordBytes": 818240.6731107206,
+          "trafficShare": 0.042025804937348865
+        },
+        {
+          "rank": 2,
+          "bytes": 863225751,
+          "records": 1053,
+          "activeDays": 19,
+          "lastDay": "2026-08-01",
+          "weekdayShare": 0.5982750855169983,
+          "avgRecordBytes": 819777.5413105413,
+          "trafficShare": 0.03895983438884014
+        },
+        {
+          "rank": 3,
+          "bytes": 810860175,
+          "records": 989,
+          "activeDays": 20,
+          "lastDay": "2026-07-31",
+          "weekdayShare": 0.6258792201750444,
+          "avgRecordBytes": 819878.8422649141,
+          "trafficShare": 0.03659642694151501
+        },
+        {
+          "rank": 4,
+          "bytes": 673908918,
+          "records": 822,
+          "activeDays": 1,
+          "lastDay": "2026-07-04",
+          "weekdayShare": 0,
+          "avgRecordBytes": 819840.5328467153,
+          "trafficShare": 0.030415427028244953
+        },
+        {
+          "rank": 5,
+          "bytes": 551791854,
+          "records": 674,
+          "activeDays": 6,
+          "lastDay": "2026-07-31",
+          "weekdayShare": 0.8588344618802582,
+          "avgRecordBytes": 818682.2759643917,
+          "trafficShare": 0.024903936454684212
+        },
+        {
+          "rank": 6,
+          "bytes": 527983699,
+          "records": 644,
+          "activeDays": 5,
+          "lastDay": "2026-07-12",
+          "weekdayShare": 0.46584699199207663,
+          "avgRecordBytes": 819850.4642857143,
+          "trafficShare": 0.02382940667515747
+        },
+        {
+          "rank": 7,
+          "bytes": 497065452,
+          "records": 607,
+          "activeDays": 14,
+          "lastDay": "2026-07-30",
+          "weekdayShare": 0.9488762759557066,
+          "avgRecordBytes": 818888.7182866557,
+          "trafficShare": 0.022433978212420085
+        },
+        {
+          "rank": 8,
+          "bytes": 408311523,
+          "records": 498,
+          "activeDays": 2,
+          "lastDay": "2026-07-07",
+          "weekdayShare": 1,
+          "avgRecordBytes": 819902.656626506,
+          "trafficShare": 0.01842826085378805
+        },
+        {
+          "rank": 9,
+          "bytes": 342711996,
+          "records": 418,
+          "activeDays": 6,
+          "lastDay": "2026-07-19",
+          "weekdayShare": 0.806235285677015,
+          "avgRecordBytes": 819885.1578947369,
+          "trafficShare": 0.015467567541586052
+        },
+        {
+          "rank": 10,
+          "bytes": 341888625,
+          "records": 417,
+          "activeDays": 14,
+          "lastDay": "2026-08-01",
+          "weekdayShare": 0.760196552312906,
+          "avgRecordBytes": 819876.798561151,
+          "trafficShare": 0.015430406465513642
+        }
+      ]
+    },
+    "all": {
+      "startDay": "2026-06-04",
+      "endDay": "2026-08-01",
+      "records": 31410,
+      "bytes": 23685836196,
+      "users": 2177,
+      "outOfJulyRecords": 411,
+      "midnightRecords": 31408,
+      "imeiMissingRecords": 31410,
+      "exactDuplicateRows": 3,
+      "strongDuplicatePairs": 3,
+      "highFrequencyLowVolumeUsers": 1,
+      "top10Count": 218,
+      "top10Bytes": 21422400113,
+      "top10TrafficShare": 0.9044392579485016,
+      "topRecords": [
+        {
+          "rank": 1,
+          "bytes": 931157886,
+          "records": 1138,
+          "activeDays": 13,
+          "lastDay": "2026-07-31",
+          "weekdayShare": 0.9101938680246542,
+          "avgRecordBytes": 818240.6731107206,
+          "trafficShare": 0.03931285677628943
+        },
+        {
+          "rank": 2,
+          "bytes": 891909135,
+          "records": 1088,
+          "activeDays": 21,
+          "lastDay": "2026-08-01",
+          "weekdayShare": 0.6111943723953449,
+          "avgRecordBytes": 819769.4255514706,
+          "trafficShare": 0.03765580102891293
+        },
+        {
+          "rank": 3,
+          "bytes": 853532654,
+          "records": 1042,
+          "activeDays": 23,
+          "lastDay": "2026-07-31",
+          "weekdayShare": 0.6445834385148198,
+          "avgRecordBytes": 819129.226487524,
+          "trafficShare": 0.03603557193155554
+        },
+        {
+          "rank": 4,
+          "bytes": 673908918,
+          "records": 822,
+          "activeDays": 1,
+          "lastDay": "2026-07-04",
+          "weekdayShare": 0,
+          "avgRecordBytes": 819840.5328467153,
+          "trafficShare": 0.02845197916693386
+        },
+        {
+          "rank": 5,
+          "bytes": 551791854,
+          "records": 674,
+          "activeDays": 6,
+          "lastDay": "2026-07-31",
+          "weekdayShare": 0.8588344618802582,
+          "avgRecordBytes": 818682.2759643917,
+          "trafficShare": 0.02329627923768151
+        },
+        {
+          "rank": 6,
+          "bytes": 527983699,
+          "records": 644,
+          "activeDays": 5,
+          "lastDay": "2026-07-12",
+          "weekdayShare": 0.46584699199207663,
+          "avgRecordBytes": 819850.4642857143,
+          "trafficShare": 0.022291115020425772
+        },
+        {
+          "rank": 7,
+          "bytes": 497885092,
+          "records": 608,
+          "activeDays": 15,
+          "lastDay": "2026-07-30",
+          "weekdayShare": 0.9489604380442064,
+          "avgRecordBytes": 818889.9539473684,
+          "trafficShare": 0.021020372170102296
+        },
+        {
+          "rank": 8,
+          "bytes": 408311523,
+          "records": 498,
+          "activeDays": 2,
+          "lastDay": "2026-07-07",
+          "weekdayShare": 1,
+          "avgRecordBytes": 819902.656626506,
+          "trafficShare": 0.017238636610556083
+        },
+        {
+          "rank": 9,
+          "bytes": 400035888,
+          "records": 488,
+          "activeDays": 3,
+          "lastDay": "2026-07-19",
+          "weekdayShare": 0.998111521934252,
+          "avgRecordBytes": 819745.6721311476,
+          "trafficShare": 0.01688924489258931
+        },
+        {
+          "rank": 10,
+          "bytes": 355824766,
+          "records": 434,
+          "activeDays": 16,
+          "lastDay": "2026-08-01",
+          "weekdayShare": 0.7695886322876132,
+          "avgRecordBytes": 819872.732718894,
+          "trafficShare": 0.015022681194598935
+        }
+      ]
+    }
+  },
+  "daily": [
+    {
+      "date": "2026-06-04",
+      "records": 2,
+      "bytes": 859847,
+      "users": 1,
+      "outOfJulyRecords": 2,
+      "midnightRecords": 0
+    },
+    {
+      "date": "2026-07-01",
+      "records": 999,
+      "bytes": 741283250,
+      "users": 142,
+      "outOfJulyRecords": 0,
+      "midnightRecords": 999
+    },
+    {
+      "date": "2026-07-02",
+      "records": 1000,
+      "bytes": 786880460,
+      "users": 109,
+      "outOfJulyRecords": 0,
+      "midnightRecords": 1000
+    },
+    {
+      "date": "2026-07-03",
+      "records": 1000,
+      "bytes": 778496300,
+      "users": 67,
+      "outOfJulyRecords": 0,
+      "midnightRecords": 1000
+    },
+    {
+      "date": "2026-07-04",
+      "records": 1000,
+      "bytes": 813049601,
+      "users": 18,
+      "outOfJulyRecords": 0,
+      "midnightRecords": 1000
+    },
+    {
+      "date": "2026-07-05",
+      "records": 1000,
+      "bytes": 759629279,
+      "users": 110,
+      "outOfJulyRecords": 0,
+      "midnightRecords": 1000
+    },
+    {
+      "date": "2026-07-06",
+      "records": 1000,
+      "bytes": 780001332,
+      "users": 120,
+      "outOfJulyRecords": 0,
+      "midnightRecords": 1000
+    },
+    {
+      "date": "2026-07-07",
+      "records": 1000,
+      "bytes": 761227061,
+      "users": 135,
+      "outOfJulyRecords": 0,
+      "midnightRecords": 1000
+    },
+    {
+      "date": "2026-07-08",
+      "records": 1000,
+      "bytes": 769583984,
+      "users": 104,
+      "outOfJulyRecords": 0,
+      "midnightRecords": 1000
+    },
+    {
+      "date": "2026-07-09",
+      "records": 1000,
+      "bytes": 766385692,
+      "users": 112,
+      "outOfJulyRecords": 0,
+      "midnightRecords": 1000
+    },
+    {
+      "date": "2026-07-10",
+      "records": 1000,
+      "bytes": 778382189,
+      "users": 97,
+      "outOfJulyRecords": 0,
+      "midnightRecords": 1000
+    },
+    {
+      "date": "2026-07-11",
+      "records": 1000,
+      "bytes": 725709846,
+      "users": 175,
+      "outOfJulyRecords": 0,
+      "midnightRecords": 1000
+    },
+    {
+      "date": "2026-07-12",
+      "records": 1000,
+      "bytes": 730114346,
+      "users": 202,
+      "outOfJulyRecords": 0,
+      "midnightRecords": 1000
+    },
+    {
+      "date": "2026-07-13",
+      "records": 1000,
+      "bytes": 740039463,
+      "users": 191,
+      "outOfJulyRecords": 0,
+      "midnightRecords": 1000
+    },
+    {
+      "date": "2026-07-14",
+      "records": 1000,
+      "bytes": 734613174,
+      "users": 202,
+      "outOfJulyRecords": 0,
+      "midnightRecords": 1000
+    },
+    {
+      "date": "2026-07-15",
+      "records": 1000,
+      "bytes": 775130711,
+      "users": 111,
+      "outOfJulyRecords": 0,
+      "midnightRecords": 1000
+    },
+    {
+      "date": "2026-07-16",
+      "records": 1000,
+      "bytes": 749163090,
+      "users": 121,
+      "outOfJulyRecords": 0,
+      "midnightRecords": 1000
+    },
+    {
+      "date": "2026-07-17",
+      "records": 1000,
+      "bytes": 791082789,
+      "users": 62,
+      "outOfJulyRecords": 0,
+      "midnightRecords": 1000
+    },
+    {
+      "date": "2026-07-18",
+      "records": 1000,
+      "bytes": 707942625,
+      "users": 173,
+      "outOfJulyRecords": 0,
+      "midnightRecords": 1000
+    },
+    {
+      "date": "2026-07-19",
+      "records": 1000,
+      "bytes": 778974021,
+      "users": 110,
+      "outOfJulyRecords": 0,
+      "midnightRecords": 1000
+    },
+    {
+      "date": "2026-07-20",
+      "records": 1000,
+      "bytes": 759101088,
+      "users": 161,
+      "outOfJulyRecords": 0,
+      "midnightRecords": 1000
+    },
+    {
+      "date": "2026-07-21",
+      "records": 1000,
+      "bytes": 658794350,
+      "users": 255,
+      "outOfJulyRecords": 0,
+      "midnightRecords": 1000
+    },
+    {
+      "date": "2026-07-22",
+      "records": 1000,
+      "bytes": 735375872,
+      "users": 200,
+      "outOfJulyRecords": 0,
+      "midnightRecords": 1000
+    },
+    {
+      "date": "2026-07-23",
+      "records": 1000,
+      "bytes": 751394031,
+      "users": 152,
+      "outOfJulyRecords": 0,
+      "midnightRecords": 1000
+    },
+    {
+      "date": "2026-07-24",
+      "records": 1000,
+      "bytes": 722157128,
+      "users": 222,
+      "outOfJulyRecords": 0,
+      "midnightRecords": 1000
+    },
+    {
+      "date": "2026-07-25",
+      "records": 1000,
+      "bytes": 763117916,
+      "users": 107,
+      "outOfJulyRecords": 0,
+      "midnightRecords": 1000
+    },
+    {
+      "date": "2026-07-26",
+      "records": 1000,
+      "bytes": 762266081,
+      "users": 137,
+      "outOfJulyRecords": 0,
+      "midnightRecords": 1000
+    },
+    {
+      "date": "2026-07-27",
+      "records": 1000,
+      "bytes": 768044124,
+      "users": 124,
+      "outOfJulyRecords": 0,
+      "midnightRecords": 1000
+    },
+    {
+      "date": "2026-07-28",
+      "records": 1000,
+      "bytes": 747918345,
+      "users": 140,
+      "outOfJulyRecords": 0,
+      "midnightRecords": 1000
+    },
+    {
+      "date": "2026-07-29",
+      "records": 1000,
+      "bytes": 754283035,
+      "users": 100,
+      "outOfJulyRecords": 0,
+      "midnightRecords": 1000
+    },
+    {
+      "date": "2026-07-30",
+      "records": 1000,
+      "bytes": 746061538,
+      "users": 158,
+      "outOfJulyRecords": 0,
+      "midnightRecords": 1000
+    },
+    {
+      "date": "2026-07-31",
+      "records": 1000,
+      "bytes": 743405131,
+      "users": 149,
+      "outOfJulyRecords": 0,
+      "midnightRecords": 1000
+    },
+    {
+      "date": "2026-08-01",
+      "records": 409,
+      "bytes": 305368497,
+      "users": 68,
+      "outOfJulyRecords": 409,
+      "midnightRecords": 409
+    }
+  ]
+}

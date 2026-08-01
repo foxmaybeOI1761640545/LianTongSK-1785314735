@@ -3,7 +3,7 @@ import { dashboardDataAdapter } from '../services/dashboardDataAdapter.js'
 import { DIRECTIONS } from '../utils/metrics.js'
 
 export function useDashboardData() {
-  const filters = ref({ range: '7', direction: DIRECTIONS.ALL })
+  const filters = ref({ range: 'all', direction: DIRECTIONS.ALL })
   const dashboard = ref(null)
   const loading = ref(true)
   const error = ref('')

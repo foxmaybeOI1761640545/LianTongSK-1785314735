@@ -1,4 +1,6 @@
 <script setup>
+import { formatBytes } from '../utils/traffic.js'
+
 defineProps({ records: { type: Array, default: () => [] } })
 defineEmits(['select', 'open-detail'])
 
@@ -19,13 +21,13 @@ const directionLabel = (direction) => direction === 'GD_TO_HK' ? '粤 → 港' :
       <span :class="['rank-number', { top: index < 3 }]">{{ String(index + 1).padStart(2, '0') }}</span>
       <span class="rank-main">
         <span><strong>{{ record.phone }}</strong><em>{{ directionLabel(record.direction) }}</em></span>
-        <small>{{ record.anomalyType }}</small>
+        <small>{{ formatBytes(record.totalBytes, 1) }} · {{ record.activeDays }} 个活跃日</small>
       </span>
       <span class="risk-score">
         <b>{{ record.riskScore }}</b>
         <i><span :style="{ width: `${record.riskScore}%` }"></span></i>
       </span>
     </button>
-    <div v-if="!records.length" class="empty-state">当前筛选条件下暂无异常样本</div>
+    <div v-if="!records.length" class="empty-state">当前筛选方向没有用户样本</div>
   </div>
 </template>

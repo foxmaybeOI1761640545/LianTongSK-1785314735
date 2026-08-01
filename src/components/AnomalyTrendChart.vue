@@ -28,10 +28,10 @@ const option = computed(() => ({
     areaStyle: {
       color: { type: 'linear', x: 0, y: 0, x2: 0, y2: 1, colorStops: [{ offset: 0, color: 'rgba(255, 173, 70, .30)' }, { offset: 1, color: 'rgba(255, 173, 70, 0)' }] },
     },
-    markLine: { silent: true, symbol: 'none', data: [{ yAxis: 3 }], lineStyle: { color: 'rgba(255, 95, 114, .6)', type: 'dashed' }, label: { color: '#ff8795', formatter: '关注阈值 3%' } },
+    markLine: { silent: true, symbol: 'none', data: [{ yAxis: 0 }], lineStyle: { color: 'rgba(255, 95, 114, .6)', type: 'dashed' }, label: { color: '#ff8795', formatter: '理想值 0%' } },
   }],
 }))
 useEChart(chartElement, option)
 </script>
 
-<template><div ref="chartElement" class="chart-canvas" data-testid="anomaly-chart" aria-label="异常率趋势图"></div></template>
+<template><div ref="chartElement" class="chart-canvas" data-testid="anomaly-chart" aria-label="跨期记录率趋势图"></div></template>

@@ -23,10 +23,10 @@ function toggleDirection(direction) {
     <div class="flow-map-grid" aria-hidden="true"></div>
     <div class="map-caption">
       <span class="live-dot"></span>
-      <span>粤港双向漫游流向 · 稽核链路实时态势</span>
+      <span>样本漫游流向 · 仅支持广东侧用户访问香港网络</span>
     </div>
 
-    <svg class="flow-svg" viewBox="0 0 760 330" role="img" aria-label="广东与香港双向漫游流量示意">
+    <svg class="flow-svg" viewBox="0 0 760 330" role="img" aria-label="广东侧用户访问香港网络的样本流量示意">
       <defs>
         <linearGradient id="regionGd" x1="0" y1="0" x2="1" y2="1">
           <stop offset="0" stop-color="#1d5d97" stop-opacity=".72" />
@@ -38,7 +38,6 @@ function toggleDirection(direction) {
         </linearGradient>
         <filter id="glow"><feGaussianBlur stdDeviation="4" result="blur" /><feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge></filter>
         <path id="pathGdHk" d="M310 155 C420 80 495 82 580 150" />
-        <path id="pathHkGd" d="M580 196 C475 270 405 265 310 198" />
       </defs>
 
       <g class="region region-gd">
@@ -60,13 +59,11 @@ function toggleDirection(direction) {
       </g>
 
       <use href="#pathGdHk" class="flow-line flow-line--cyan" />
-      <use href="#pathHkGd" class="flow-line flow-line--violet" />
       <circle r="5" fill="#69efff" filter="url(#glow)"><animateMotion dur="2.5s" repeatCount="indefinite"><mpath href="#pathGdHk" /></animateMotion></circle>
-      <circle r="4" fill="#9b91ff" filter="url(#glow)"><animateMotion dur="2.9s" repeatCount="indefinite"><mpath href="#pathHkGd" /></animateMotion></circle>
 
       <g transform="translate(410 142)">
         <rect x="-67" y="-20" width="134" height="39" rx="19" class="route-label-bg" />
-        <text text-anchor="middle" y="5" class="route-label">跨域 CDR 交叉稽核</text>
+        <text text-anchor="middle" y="5" class="route-label">脱敏话单聚合分析</text>
       </g>
     </svg>
 
@@ -79,7 +76,7 @@ function toggleDirection(direction) {
       >
         <span class="direction-title">广东 <b>→</b> 香港</span>
         <strong>{{ formatBytes(gdToHk.totalBytes) }}</strong>
-        <span>{{ Number(gdToHk.completedCount ?? 0).toLocaleString('zh-CN') }} 条 · 异常率 {{ Number(gdToHk.anomalyRate ?? 0).toFixed(2) }}%</span>
+        <span>{{ Number(gdToHk.completedCount ?? 0).toLocaleString('zh-CN') }} 条 · {{ Number(gdToHk.userCount ?? 0).toLocaleString('zh-CN') }} 用户</span>
       </button>
       <button
         type="button"
@@ -89,14 +86,14 @@ function toggleDirection(direction) {
       >
         <span class="direction-title">香港 <b>→</b> 广东</span>
         <strong>{{ formatBytes(hkToGd.totalBytes) }}</strong>
-        <span>{{ Number(hkToGd.completedCount ?? 0).toLocaleString('zh-CN') }} 条 · 异常率 {{ Number(hkToGd.anomalyRate ?? 0).toFixed(2) }}%</span>
+        <span>{{ Number(hkToGd.completedCount ?? 0).toLocaleString('zh-CN') }} 条 · 本样本无反向记录</span>
       </button>
     </div>
 
     <div class="map-legend">
-      <span><i class="legend-cyan"></i>语音 / SACP</span>
-      <span><i class="legend-violet"></i>流量 / DCC · GGSN</span>
-      <span><i class="legend-amber"></i>稽核结算</span>
+      <span><i class="legend-cyan"></i>内地用户归属</span>
+      <span><i class="legend-violet"></i>香港访问网络</span>
+      <span><i class="legend-amber"></i>静态脱敏聚合</span>
     </div>
   </div>
 </template>

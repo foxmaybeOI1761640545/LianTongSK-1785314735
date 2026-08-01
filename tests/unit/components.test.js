@@ -7,10 +7,11 @@ describe('dashboard interactions', () => {
   it('exposes a complete accessible KPI label and emits selection', async () => {
     const wrapper = mount(KpiCard, {
       props: {
-        kpi: { id: 'rate', label: '异常率', displayValue: '2.80%', trend: -1.2, definition: '异常/完成', tone: 'amber' },
+        kpi: { id: 'crossPeriod', label: '跨期记录', displayValue: '411', trend: null, definition: '规则推导', tone: 'amber' },
       },
     })
-    expect(wrapper.attributes('aria-label')).toContain('异常率：2.80%')
+    expect(wrapper.attributes('aria-label')).toContain('跨期记录：411')
+    expect(wrapper.text()).toContain('样本快照')
     await wrapper.trigger('click')
     expect(wrapper.emitted('select')).toHaveLength(1)
     await wrapper.trigger('dblclick')
@@ -21,10 +22,11 @@ describe('dashboard interactions', () => {
     const wrapper = mount(CdrDetailDrawer, {
       props: {
         record: {
-          id: 'CDR-1', direction: 'GD_TO_HK', time: '2026-07-29 10:00:00', riskScore: 90,
-          anomalyType: '金额偏差', rule: 'R-1', phone: '139****0000', subscriberTier: '高价值个人', status: '待核查',
-          homeRegion: '广东', visitedRegion: '香港', ggsn: 'HK-GGSN-02', gdBytes: 100, hkBytes: 80,
-          gdAmount: 100, hkAmount: 140, differenceAmount: 40, cause: '原因', impact: '影响', suggestion: '建议',
+          id: 'HV-ALL-001', direction: 'GD_TO_HK', riskScore: 96,
+          anomalyType: '高流量价值关注', rule: 'Top 10%', phone: '高价值样本 #01', subscriberTier: 'Top 10% 高流量用户', status: '画像关注',
+          homeRegion: '广东侧用户', visitedRegion: '香港网络', totalBytes: 931157886, recordCount: 1138,
+          activeDays: 13, lastActiveDay: '2026-07-31', averageRecordBytes: 818240,
+          trafficShare: 0.0393, weekdayShare: 0.9102, cause: '依据', impact: '影响', suggestion: '建议',
         },
       },
       attachTo: document.body,

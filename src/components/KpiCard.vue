@@ -9,7 +9,10 @@ const props = defineProps({
 
 defineEmits(['select', 'open-detail'])
 
-const trendLabel = computed(() => `${props.kpi.trend >= 0 ? '较上期上升' : '较上期下降'} ${Math.abs(props.kpi.trend).toFixed(1)}%`)
+const hasTrend = computed(() => Number.isFinite(props.kpi.trend))
+const trendLabel = computed(() => hasTrend.value
+  ? `${props.kpi.trend >= 0 ? '较上期上升' : '较上期下降'} ${Math.abs(props.kpi.trend).toFixed(1)}%`
+  : '当前筛选范围的样本快照')
 </script>
 
 <template>
@@ -27,8 +30,14 @@ const trendLabel = computed(() => `${props.kpi.trend >= 0 ? '较上期上升' : 
     <span class="kpi-label">{{ kpi.label }}</span>
     <strong class="kpi-value">{{ kpi.displayValue }}</strong>
     <span class="kpi-meta">
-      <span :class="['trend', kpi.trendGood ? 'good' : 'bad']">{{ kpi.trend >= 0 ? '↗' : '↘' }} {{ Math.abs(kpi.trend).toFixed(1) }}%</span>
-      <span>较上期</span>
+      <template v-if="hasTrend">
+        <span :class="['trend', kpi.trendGood ? 'good' : 'bad']">{{ kpi.trend >= 0 ? '↗' : '↘' }} {{ Math.abs(kpi.trend).toFixed(1) }}%</span>
+        <span>较上期</span>
+      </template>
+      <template v-else>
+        <span class="trend good">●</span>
+        <span>样本快照</span>
+      </template>
     </span>
     <span class="kpi-definition">{{ kpi.definition }}</span>
   </button>

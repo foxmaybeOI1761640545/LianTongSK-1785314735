@@ -35,11 +35,11 @@ const timeText = computed(() => new Intl.DateTimeFormat('zh-CN', {
         <span></span><span></span><span></span>
       </div>
       <div>
-        <div class="brand-kicker">LIANTONG · ROAMING AUDIT COMMAND CENTER</div>
-        <h1>粤港一卡双号漫游话单智能稽核驾驶舱</h1>
+        <div class="brand-kicker">LIANTONG · ROAMING DATA INSIGHT COMMAND CENTER</div>
+        <h1>粤港一卡双号漫游数据洞察驾驶舱</h1>
         <div class="brand-subline">
-          <p>从合规稽核到价值经营</p>
-          <span class="inline-source"><i></i>演示数据</span>
+          <p>从真实数据到价值经营</p>
+          <span class="inline-source"><i></i>真实样本聚合</span>
         </div>
       </div>
     </div>
@@ -48,6 +48,7 @@ const timeText = computed(() => new Intl.DateTimeFormat('zh-CN', {
       <label class="control-field">
         <span>观察周期</span>
         <select :value="filters.range" aria-label="观察周期" data-testid="range-filter" @change="emit('range-change', $event.target.value)">
+          <option value="all">全量样本</option>
           <option value="7">近 7 天</option>
           <option value="14">近 14 天</option>
           <option value="30">近 30 天</option>
@@ -84,7 +85,7 @@ const timeText = computed(() => new Intl.DateTimeFormat('zh-CN', {
       <span class="source-pill"><i></i>数据源：{{ source?.label ?? '数据加载中' }}</span>
       <span>{{ source?.message ?? '正在初始化稽核数据契约' }}</span>
       <span class="source-divider"></span>
-      <span>固定 Seed：{{ source?.seed ?? '—' }}</span>
+      <span>口径版本：{{ source?.version ?? '—' }}</span>
       <span class="source-divider"></span>
       <span>业务快照：{{ source?.snapshotAt ?? '—' }}</span>
     </div>
