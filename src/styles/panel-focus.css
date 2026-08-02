@@ -1,0 +1,105 @@
+.panel-focus-host:not(.is-open),
+.panel-focus-stage:not(.is-open) {
+  display: contents;
+}
+
+.panel-focus-placeholder {
+  min-width: 0;
+  min-height: 0;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+}
+
+.panel-focus-host.is-open {
+  position: fixed;
+  z-index: 1000;
+  inset: 0;
+  display: grid;
+  overflow: hidden;
+  place-items: center;
+  padding: 48px;
+  pointer-events: auto;
+}
+
+.panel-focus-backdrop {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  width: 100%;
+  border: 0;
+  background: rgba(0, 5, 15, 0.78);
+  backdrop-filter: blur(8px) saturate(0.72);
+}
+
+.panel-focus-stage.is-open {
+  position: relative;
+  z-index: 1;
+  width: var(--panel-focus-width);
+  height: var(--panel-focus-height);
+  transform: scale(var(--panel-focus-scale));
+  transform-origin: center;
+  will-change: transform;
+  animation: panel-focus-scale-in 260ms cubic-bezier(.18, .86, .28, 1);
+}
+
+.panel-frame.is-panel-focused {
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  margin: 0;
+  overflow: hidden;
+  cursor: zoom-out;
+  box-shadow:
+    0 0 0 1px rgba(69, 230, 255, 0.34),
+    0 30px 90px rgba(0, 0, 0, 0.52),
+    inset 0 1px rgba(255, 255, 255, 0.04);
+}
+
+.panel-focus-close {
+  position: fixed;
+  z-index: 1002;
+  top: 22px;
+  right: 24px;
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border: 1px solid rgba(69, 230, 255, 0.58);
+  border-radius: 50%;
+  color: var(--cyan);
+  background: rgba(5, 19, 37, 0.94);
+  box-shadow: 0 0 24px rgba(69, 230, 255, 0.18);
+  font-size: 25px;
+  line-height: 1;
+}
+
+.panel-focus-close:hover {
+  border-color: var(--cyan);
+  background: rgba(13, 42, 70, 0.98);
+}
+
+@keyframes panel-focus-scale-in {
+  from {
+    opacity: 0;
+    transform: scale(calc(var(--panel-focus-scale) * 0.92));
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(var(--panel-focus-scale));
+  }
+}
+
+@media (max-width: 700px) {
+  .panel-focus-host.is-open {
+    padding: 24px;
+  }
+
+  .panel-focus-close {
+    top: 12px;
+    right: 12px;
+    width: 36px;
+    height: 36px;
+  }
+}

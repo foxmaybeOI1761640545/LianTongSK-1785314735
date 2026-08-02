@@ -6,5 +6,6 @@ import './styles/dashboard.css'
 import './styles/experience-value.css'
 import './styles/experience-drawer.css'
 import './styles/focus-detail.css'
+import './styles/panel-focus.css'
 
 createApp(App).mount('#app')
