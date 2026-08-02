@@ -4,6 +4,7 @@ import './styles/tokens.css'
 import './styles/base.css'
 import './styles/dashboard.css'
 import './styles/experience-value.css'
+import './styles/experience-drawer.css'
 import './styles/focus-detail.css'
 
 createApp(App).mount('#app')
