@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - 'future/**'
+      - 'future/*/*'
   pull_request:
     branches:
       - main
@@ -65,9 +65,14 @@ jobs:
 
   pages-artifact:
     name: Build Pages artifact
-    if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main'
+    if: >-
+      (github.event_name == 'push' || github.event_name == 'workflow_dispatch') &&
+      (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/future/'))
     needs: verify
     runs-on: ubuntu-latest
+    concurrency:
+      group: github-pages-publish
+      cancel-in-progress: true
     permissions:
       contents: read
       pages: write
@@ -91,9 +96,14 @@ jobs:
 
   deploy:
     name: Deploy current branch to Pages
-    if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main'
+    if: >-
+      (github.event_name == 'push' || github.event_name == 'workflow_dispatch') &&
+      (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/future/'))
     needs: pages-artifact
     runs-on: ubuntu-latest
+    concurrency:
+      group: github-pages-publish
+      cancel-in-progress: true
     permissions:
       pages: write
       id-token: write
@@ -109,9 +119,14 @@ jobs:
 
   remote-smoke:
     name: Verify deployed Pages
-    if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main'
+    if: >-
+      (github.event_name == 'push' || github.event_name == 'workflow_dispatch') &&
+      (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/future/'))
     needs: deploy
     runs-on: ubuntu-latest
+    concurrency:
+      group: github-pages-publish
+      cancel-in-progress: true
     steps:
       - name: Checkout
         uses: actions/checkout@v7
