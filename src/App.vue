@@ -111,7 +111,8 @@ const detailCatalog = computed(() => {
   const catalog = new Map()
   const summary = dashboard.value.summary
   const value = dashboard.value.value
-  const rangeLabel = filters.range === 'all' ? '完整样本周期' : `${filters.range} 天`
+  const activeFilters = filters.value
+  const rangeLabel = activeFilters.range === 'all' ? '完整样本周期' : `${activeFilters.range} 天`
 
   for (const kpi of dashboard.value.kpis) {
     catalog.set(`kpi-${kpi.id}`, {
@@ -121,7 +122,7 @@ const detailCatalog = computed(() => {
       metrics: [
         { label: '当前值', value: kpi.displayValue, note: '来自当前筛选周期的同源聚合结果' },
         { label: '指标属性', value: kpi.definition.split('｜')[0], note: '明确区分真实聚合与规则推导' },
-        { label: '筛选口径', value: rangeLabel, note: filters.direction === 'ALL' ? '当前样本全部来自广东用户赴港方向' : '仅展示当前漫游方向' },
+        { label: '筛选口径', value: rangeLabel, note: activeFilters.direction === 'ALL' ? '当前样本全部来自广东用户赴港方向' : '仅展示当前漫游方向' },
       ],
       bullets: ['单击 KPI 联动高亮，双击进入详情路由。', '所有 KPI 来自同一份 31,410 条脱敏话单样本。', '没有对侧话单或生产资费支撑的指标不会包装成真实结论。'],
     })
@@ -189,7 +190,7 @@ const detailCatalog = computed(() => {
     subtitle: '在缺少正式资费和对侧话单时，以统一假设单价演示结算计算方法。',
     metrics: [
       { label: '估算应付', value: formatCompactCurrency(summary.hkPayable), note: '漫游流量 × 情景单价，不代表生产结算金额' },
-      { label: '假设单价', value: `¥${dashboard.value.settlement.rateCnyPerMiB.toFixed(2)} / MiB`, note: '仅用于可视化演示的统一参数' },
+      { label: '假设单价', value: `¥${Number(dashboard.value.settlement.rateCnyPerGiB ?? 0).toFixed(2)} / GB`, note: '仅用于可视化演示的统一参数' },
       { label: '估算流量', value: formatBytes(summary.totalBytes, 2), note: '来自当前筛选范围的真实聚合流量' },
     ],
     bullets: ['金额区明确标注“情景估算”。', '缺少对侧话单时不展示差异金额或挽回金额。', '正式资费与对侧 CDR 到位后可替换估算模块。'],

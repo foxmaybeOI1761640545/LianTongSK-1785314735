@@ -1,7 +1,6 @@
 <script setup>
 import { computed } from 'vue'
-import { formatCurrency } from '../utils/currency.js'
-import { formatBytes, trafficDifferencePercent } from '../utils/traffic.js'
+import { formatBytes } from '../utils/traffic.js'
 
 const props = defineProps({
   detail: { type: Object, default: null },
@@ -10,7 +9,8 @@ const props = defineProps({
 defineEmits(['home'])
 
 const record = computed(() => props.detail?.record ?? null)
-const trafficGap = computed(() => record.value ? trafficDifferencePercent(record.value.gdBytes, record.value.hkBytes) : 0)
+const weekdayShare = computed(() => `${((record.value?.weekdayShare ?? 0) * 100).toFixed(1)}%`)
+const trafficShare = computed(() => `${((record.value?.trafficShare ?? 0) * 100).toFixed(2)}%`)
 </script>
 
 <template>
@@ -27,36 +27,38 @@ const trafficGap = computed(() => record.value ? trafficDifferencePercent(record
 
     <section v-if="record" class="detail-record-grid">
       <div class="risk-banner detail-risk">
-        <div class="risk-gauge"><strong>{{ record.riskScore }}</strong><span>风险分</span></div>
+        <div class="risk-gauge"><strong>{{ record.riskScore }}</strong><span>流量指数</span></div>
         <div><span class="risk-type">{{ record.anomalyType }}</span><h2>{{ record.rule }}</h2><p>{{ record.phone }} · {{ record.subscriberTier }} · {{ record.status }}</p></div>
       </div>
 
+      <div class="section-heading detail-section-heading"><span>01</span><div><h3>真实聚合证据</h3><p>不包含号码明文、IMSI、IP 或位置明细</p></div></div>
       <div class="evidence-grid">
         <article class="evidence-card gd">
-          <header><span>广东侧 CDR</span><em>{{ record.homeRegion === '广东' ? '用户归属侧' : '用户访问侧' }}</em></header>
+          <header><span>使用规模</span><em>源话单聚合</em></header>
           <dl>
-            <div><dt>报文来源</dt><dd>广东 GGSN</dd></div>
-            <div><dt>流量</dt><dd>{{ formatBytes(record.gdBytes, 2) }}</dd></div>
-            <div><dt>计费金额</dt><dd>{{ formatCurrency(record.gdAmount) }}</dd></div>
-            <div><dt>用户归属 / 上网地</dt><dd>{{ record.homeRegion }} / {{ record.visitedRegion }}</dd></div>
+            <div><dt>周期总流量</dt><dd>{{ formatBytes(record.totalBytes, 2) }}</dd></div>
+            <div><dt>话单记录</dt><dd>{{ Number(record.recordCount).toLocaleString('zh-CN') }} 条</dd></div>
+            <div><dt>活跃天数</dt><dd>{{ record.activeDays }} 天</dd></div>
+            <div><dt>单条平均流量</dt><dd>{{ formatBytes(record.averageRecordBytes, 2) }}</dd></div>
           </dl>
         </article>
-        <div class="evidence-compare"><span>VS</span><strong>{{ trafficGap.toFixed(1) }}%</strong><small>流量差异率</small></div>
+        <div class="evidence-compare"><span>TOP</span><strong>10%</strong><small>流量排序</small></div>
         <article class="evidence-card hk">
-          <header><span>香港侧 CDR</span><em>{{ record.homeRegion === '香港' ? '用户归属侧' : '用户访问侧' }}</em></header>
+          <header><span>行为特征</span><em>规则推导</em></header>
           <dl>
-            <div><dt>报文来源</dt><dd>{{ record.ggsn }}</dd></div>
-            <div><dt>流量</dt><dd>{{ formatBytes(record.hkBytes, 2) }}</dd></div>
-            <div><dt>计费金额</dt><dd>{{ formatCurrency(record.hkAmount) }}</dd></div>
-            <div><dt>金额差异</dt><dd class="danger">{{ formatCurrency(record.differenceAmount) }}</dd></div>
+            <div><dt>当前周期流量贡献</dt><dd>{{ trafficShare }}</dd></div>
+            <div><dt>工作日流量占比</dt><dd>{{ weekdayShare }}</dd></div>
+            <div><dt>用户归属 / 访问地</dt><dd>{{ record.homeRegion }} / {{ record.visitedRegion }}</dd></div>
+            <div><dt>标签状态</dt><dd class="danger">{{ record.status }}</dd></div>
           </dl>
         </article>
       </div>
 
+      <div class="section-heading detail-section-heading"><span>02</span><div><h3>画像规则说明</h3><p>从真实聚合指标到经营建议</p></div></div>
       <div class="reasoning-flow">
-        <article><i>!</i><span>可能原因</span><p>{{ record.cause }}</p></article>
+        <article><i>!</i><span>识别依据</span><p>{{ record.cause }}</p></article>
         <b>→</b>
-        <article><i>¥</i><span>业务影响</span><p>{{ record.impact }}</p></article>
+        <article><i>¥</i><span>业务含义</span><p>{{ record.impact }}</p></article>
         <b>→</b>
         <article class="recommended"><i>✓</i><span>建议动作</span><p>{{ record.suggestion }}</p></article>
       </div>

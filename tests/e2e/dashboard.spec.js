@@ -30,13 +30,24 @@ test('links direction filter, high-value ranking and evidence drawer', async ({ 
 })
 
 test('opens and closes route-style detail pages with double click', async ({ page }) => {
+  const pageErrors = []
+  page.on('pageerror', (error) => pageErrors.push(error.stack ?? error.message))
   await page.goto('')
   await page.getByTestId('kpi-grid').locator('.kpi-card').first().dblclick()
   await expect(page).toHaveURL(/#\/detail\/kpi-/)
+  expect(pageErrors).toEqual([])
   await expect(page.getByTestId('detail-route')).toBeVisible()
   await expect(page.getByText('KPI DRILLDOWN')).toBeVisible()
   await page.getByTestId('detail-route').dblclick()
   await expect(page).not.toHaveURL(/#\/detail\//)
+  await expect(page.getByTestId('kpi-grid')).toBeVisible()
+
+  await page.getByTestId('high-value-ranking').locator('.ranking-row').first().dblclick()
+  await expect(page).toHaveURL(/#\/detail\/HV-/)
+  await expect(page.getByTestId('detail-route')).toContainText('真实聚合证据')
+  await expect(page.getByTestId('detail-route')).toContainText('使用规模')
+  await expect(page.getByTestId('detail-route')).toContainText(/1\d{2}\*{4}\d{4}/)
+  await page.getByTestId('detail-route').dblclick()
   await expect(page.getByTestId('kpi-grid')).toBeVisible()
 })
 
