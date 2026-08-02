@@ -5,6 +5,7 @@ import PanelFrame from '../../src/components/PanelFrame.vue'
 
 afterEach(() => {
   vi.restoreAllMocks()
+  vi.unstubAllGlobals()
   document.body.innerHTML = ''
 })
 

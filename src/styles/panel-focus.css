@@ -39,7 +39,6 @@
   transform: scale(var(--panel-focus-scale));
   transform-origin: center;
   will-change: transform;
-  animation: panel-focus-scale-in 260ms cubic-bezier(.18, .86, .28, 1);
 }
 
 .panel-frame.is-panel-focused {
@@ -77,18 +76,6 @@
 .panel-focus-close:hover {
   border-color: var(--cyan);
   background: rgba(13, 42, 70, 0.98);
-}
-
-@keyframes panel-focus-scale-in {
-  from {
-    opacity: 0;
-    transform: scale(calc(var(--panel-focus-scale) * 0.92));
-  }
-
-  to {
-    opacity: 1;
-    transform: scale(var(--panel-focus-scale));
-  }
 }
 
 @media (max-width: 700px) {
