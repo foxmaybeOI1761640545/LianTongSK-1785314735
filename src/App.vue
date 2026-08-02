@@ -22,6 +22,7 @@ import { formatBytes } from './utils/traffic.js'
 const { filters, dashboard, loading, error, setRange, setDirection, reload } = useDashboardData()
 const selectedRecord = ref(null)
 const manualActive = ref('')
+const focusOrigin = ref({ x: 50, y: 50 })
 let manualTimer = null
 
 function readDetailId() {
@@ -35,8 +36,18 @@ function syncRoute() {
   routeDetailId.value = readDetailId()
 }
 
-onMounted(() => globalThis.addEventListener('hashchange', syncRoute))
-onBeforeUnmount(() => globalThis.removeEventListener('hashchange', syncRoute))
+function handleKeydown(event) {
+  if (event.key === 'Escape' && routeDetailId.value) goHome()
+}
+
+onMounted(() => {
+  globalThis.addEventListener('hashchange', syncRoute)
+  globalThis.addEventListener('keydown', handleKeydown)
+})
+onBeforeUnmount(() => {
+  globalThis.removeEventListener('hashchange', syncRoute)
+  globalThis.removeEventListener('keydown', handleKeydown)
+})
 
 function highlight(section) {
   manualActive.value = section
@@ -81,9 +92,19 @@ function selectKpi(kpi) {
   else highlight('kpis')
 }
 
-function openDetail(target) {
+function openDetail(payload) {
   manualInteraction()
   selectedRecord.value = null
+  const target = payload?.target ?? payload
+  const origin = payload?.origin
+  if (origin && globalThis.innerWidth && globalThis.innerHeight) {
+    focusOrigin.value = {
+      x: Math.min(96, Math.max(4, (origin.x / globalThis.innerWidth) * 100)),
+      y: Math.min(96, Math.max(4, (origin.y / globalThis.innerHeight) * 100)),
+    }
+  } else {
+    focusOrigin.value = { x: 50, y: 50 }
+  }
   const id = typeof target === 'string'
     ? target
     : target?.rule || target?.provenance
@@ -124,48 +145,50 @@ const detailCatalog = computed(() => {
         { label: '指标属性', value: kpi.definition.split('｜')[0], note: '明确区分真实聚合与规则推导' },
         { label: '筛选口径', value: rangeLabel, note: activeFilters.direction === 'ALL' ? '当前样本全部来自广东用户赴港方向' : '仅展示当前漫游方向' },
       ],
-      bullets: ['单击 KPI 联动高亮，双击进入详情路由。', '所有 KPI 来自同一份 31,410 条脱敏话单样本。', '没有对侧话单或生产资费支撑的指标不会包装成真实结论。'],
+      bullets: ['单击 KPI 联动高亮，双击进入居中聚焦详情。', '所有 KPI 来自同一份 31,410 条脱敏话单样本。', '没有对侧话单或生产资费支撑的指标不会包装成真实结论。'],
     })
   }
 
   catalog.set('traffic-trend', {
     eyebrow: 'CDR VOLUME & TRAFFIC',
-    title: '话单与流量趋势',
-    subtitle: '按天展示真实样本的话单量和 RG 使用量，解释业务规模及日间波动。',
+    title: '话单与流量样本分布',
+    subtitle: '按天展示样本话单量和 RG 使用量；连续日期恰好 1,000 条，不能外推为完整生产趋势。',
     metrics: [
       { label: '样本话单', value: summary.completedCount.toLocaleString('zh-CN'), note: '当前筛选范围内的真实话单记录数' },
       { label: '漫游流量', value: formatBytes(summary.totalBytes, 2), note: 'RG 使用量统一按 bytes 聚合后换算展示' },
       { label: '活跃用户', value: summary.activeUsers.toLocaleString('zh-CN'), note: '计费号码与 IMSI 一对一去重结果' },
     ],
-    bullets: ['用于开场说明数据覆盖规模。', '话单量与流量使用同一日期范围。', '后续接 DataEase 时可直接替换这组时序聚合。'],
+    bullets: ['用于开场说明数据覆盖规模。', '30 个日期恰好 1,000 条，可能存在抽样上限或 ETL 截断。', '后续接 DataEase 时可直接替换这组时序聚合。'],
   })
 
   catalog.set('anomaly-distribution', {
     eyebrow: 'DATA QUALITY SIGNALS',
-    title: '数据质量关注信号',
-    subtitle: '对真实样本执行字段完整性、时间一致性与重复候选规则，呈现可复核的数据质量线索。',
-    metrics: dashboard.value.anomalyDistribution.slice(0, 3).map((item) => ({ label: item.name, value: item.value.toLocaleString('zh-CN'), note: '按当前筛选周期独立计数' })),
-    bullets: ['各质量信号可以在同一条记录上重叠，不应简单相加。', '跨期记录由事件月份与文件标称月份比对得出。', '质量信号代表待关注线索，不直接等同于计费事故。'],
+    title: '数据质量检查',
+    subtitle: '按记录、重复冗余和用户三种独立口径列示检查结果，不再汇总成一个不可解释的总数。',
+    metrics: dashboard.value.anomalyDistribution.slice(0, 3).map((item) => ({ label: item.name, value: `${item.value.toLocaleString('zh-CN')} ${item.unit}`, note: item.note })),
+    bullets: ['各项检查的统计单位不同，不能直接相加。', '账期外记录由事件月份与文件标称月份比对得出。', '检查结果代表待关注线索，不直接等同于计费事故。'],
   })
 
   catalog.set('flow-topology', {
     eyebrow: 'ROAMING FLOW TOPOLOGY',
     title: '粤港漫游样本流向',
     subtitle: '按用户归属与访问网络展示样本覆盖方向，避免把单向样本误解为完整双向态势。',
-    metrics: dashboard.value.flows.map((flow) => ({ label: flow.direction === 'GD_TO_HK' ? '粤 → 港' : '港 → 粤', value: `${flow.networkShare.toFixed(0)}%`, note: `${flow.completedCount.toLocaleString('zh-CN')} 条话单 · ${flow.userCount.toLocaleString('zh-CN')} 位用户 · ${formatBytes(flow.totalBytes, 2)}` })),
-    bullets: ['当前真实样本只覆盖广东用户赴港方向。', '香港用户来粤显示为零，代表样本缺失而非真实业务为零。', '补齐对侧数据后才能开展双边结算稽核。'],
+    metrics: dashboard.value.flows.map((flow) => flow.coverage === 'missing'
+      ? { label: '港 → 粤', value: '未覆盖', note: '对侧话单未提供，不表达为业务量 0' }
+      : { label: '粤 → 港', value: `${flow.networkShare.toFixed(0)}%`, note: `${flow.completedCount.toLocaleString('zh-CN')} 条话单 · ${flow.userCount.toLocaleString('zh-CN')} 位用户 · ${formatBytes(flow.totalBytes, 2)}` }),
+    bullets: ['当前真实样本只覆盖广东侧用户赴港方向。', '香港归属用户来粤标为“未覆盖”，不推断真实业务量。', '补齐对侧数据后才能开展双边结算稽核。'],
   })
 
   catalog.set('anomaly-rate', {
     eyebrow: 'OUT-OF-PERIOD RATE',
-    title: '跨期记录率趋势',
-    subtitle: '观察事件月份不等于文件标称月份 2026-07 的记录占比，理想值为零。',
+    title: '账期外记录分布',
+    subtitle: '按日期展示事件月份不属于文件标称月份 2026-07 的记录数，避免将边界日期渲染成夸张的 100% 峰值。',
     metrics: [
-      { label: '跨期记录率', value: `${summary.anomalyRate.toFixed(2)}%`, note: '跨期记录数 ÷ 当前筛选话单数' },
-      { label: '跨期记录', value: summary.anomalyCount.toLocaleString('zh-CN'), note: '事件月份不属于 2026-07 的记录' },
-      { label: '目标值', value: '0.00%', note: summary.anomalyCount > 0 ? '当前存在需要核对的跨期记录' : '当前筛选范围未发现跨期记录' },
+      { label: '账期一致率', value: summary.hasSample ? `${(100 - summary.anomalyRate).toFixed(2)}%` : '未覆盖', note: '账期内记录数 ÷ 当前筛选话单数' },
+      { label: '账期外记录', value: summary.hasSample ? summary.anomalyCount.toLocaleString('zh-CN') : '未覆盖', note: '事件月份不属于 2026-07 的记录' },
+      { label: '检查状态', value: summary.hasSample ? (summary.anomalyCount > 0 ? '需要核对' : '范围内一致') : '无样本', note: '不把边界日期的记录率包装成业务异常峰值' },
     ],
-    bullets: ['跨期率比跨期数量更适合跨天比较。', '规则仅使用可验证的事件时间与文件周期。', '该信号不推断费用损失，需结合对侧话单继续核查。'],
+    bullets: ['全量样本账期一致率为 98.69%。', '6 月 2 条、8 月 409 条共同构成 411 条账期外记录。', '该检查不推断费用损失，需结合对侧话单继续核查。'],
   })
 
   catalog.set('risk-ranking', {
@@ -173,7 +196,7 @@ const detailCatalog = computed(() => {
     title: '高价值用户画像 TOP 10',
     subtitle: '按筛选周期内用户总流量排序，展示头部用户的脱敏聚合画像。',
     metrics: dashboard.value.highValueRecords.slice(0, 3).map((record) => ({ label: record.phone, value: `${record.riskScore} 分`, note: `${formatBytes(record.totalBytes, 2)} · ${record.activeDays} 个活跃日` })),
-    bullets: ['单击打开聚合画像抽屉，双击进入详情路由。', '流量指数来自排序位置，不代表信用、收入或风险评分。', '号码仅以脱敏形式展示，页面不发布 IMSI、IP 或位置明细。'],
+    bullets: ['单击打开聚合画像抽屉，双击进入居中聚焦详情。', '流量指数来自排序位置，不代表信用、收入或风险评分。', '号码仅以脱敏形式展示，页面不发布 IMSI、IP 或位置明细。'],
   })
 
   catalog.set('recent-queue', {
@@ -189,11 +212,11 @@ const detailCatalog = computed(() => {
     title: '结算情景估算',
     subtitle: '在缺少正式资费和对侧话单时，以统一假设单价演示结算计算方法。',
     metrics: [
-      { label: '估算应付', value: formatCompactCurrency(summary.hkPayable), note: '漫游流量 × 情景单价，不代表生产结算金额' },
-      { label: '假设单价', value: `¥${Number(dashboard.value.settlement.rateCnyPerGiB ?? 0).toFixed(2)} / GB`, note: '仅用于可视化演示的统一参数' },
-      { label: '估算流量', value: formatBytes(summary.totalBytes, 2), note: '来自当前筛选范围的真实聚合流量' },
+      { label: '样本侧估算支出', value: Number.isFinite(summary.hkPayable) ? formatCompactCurrency(summary.hkPayable) : '未覆盖', note: '漫游流量 × 情景单价，不代表生产结算金额' },
+      { label: '假设单价', value: `¥${Number(dashboard.value.settlement.rateCnyPerGB ?? 0).toFixed(2)} / GB`, note: '1 GB = 1,000,000,000 B；仅用于可视化演示' },
+      { label: '估算流量', value: summary.hasSample ? formatBytes(summary.totalBytes, 2) : '未覆盖', note: '来自当前筛选范围的真实聚合流量' },
     ],
-    bullets: ['金额区明确标注“情景估算”。', '缺少对侧话单时不展示差异金额或挽回金额。', '正式资费与对侧 CDR 到位后可替换估算模块。'],
+    bullets: ['金额区明确标注“情景估算”。', '对侧收入标为“未提供”，双向净额标为“暂不可计算”。', '正式资费与对侧 CDR 到位后可替换估算模块。'],
   })
 
   catalog.set('value-conversion', {
@@ -217,7 +240,7 @@ const detailCatalog = computed(() => {
   })
 
   for (const record of combinedRecords.value) {
-    catalog.set(record.id, { eyebrow: 'CDR EVIDENCE ROUTE', title: record.id, subtitle: `${record.homeRegion} → ${record.visitedRegion} · ${record.time}`, record })
+    catalog.set(record.id, { eyebrow: 'CDR EVIDENCE ROUTE', title: record.id, subtitle: `${record.homeRegion} → ${record.visitedRegion} · 最后活跃 ${record.lastActiveDay}`, record })
   }
 
   return catalog
@@ -236,9 +259,7 @@ const activeDetail = computed(() => {
 </script>
 
 <template>
-  <DetailRouteView v-if="activeDetail" :detail="activeDetail" @home="goHome" />
-
-  <div v-else class="dashboard-shell">
+  <div class="dashboard-shell" :class="{ 'is-focus-open': activeDetail }" :aria-hidden="Boolean(activeDetail)">
     <div class="ambient ambient-one"></div>
     <div class="ambient ambient-two"></div>
 
@@ -270,10 +291,10 @@ const activeDetail = computed(() => {
 
       <section class="analytics-grid">
         <div class="left-column">
-          <PanelFrame title="话单与流量趋势" eyebrow="CDR VOLUME & TRAFFIC" detail-id="traffic-trend" @open-detail="openDetail">
+          <PanelFrame title="话单与流量样本分布" eyebrow="CDR VOLUME & TRAFFIC" detail-id="traffic-trend" @open-detail="openDetail">
             <TrafficTrendChart :data="dashboard.trend" />
           </PanelFrame>
-          <PanelFrame title="数据质量关注信号" eyebrow="DATA QUALITY SIGNALS" :active="activeStep === 'anomaly'" detail-id="anomaly-distribution" @open-detail="openDetail">
+          <PanelFrame title="数据质量检查" eyebrow="DATA QUALITY CHECKS" :active="activeStep === 'anomaly'" detail-id="anomaly-distribution" @open-detail="openDetail">
             <AnomalyDistribution :data="dashboard.anomalyDistribution" />
           </PanelFrame>
         </div>
@@ -283,8 +304,8 @@ const activeDetail = computed(() => {
             <template #header><span class="panel-badge">DCC / GGSN</span></template>
             <RoamingFlowMap :flows="dashboard.flows" :selected="filters.direction" :active="activeStep === 'flow'" @select="changeDirection" />
           </PanelFrame>
-          <PanelFrame title="跨期记录率趋势" eyebrow="OUT-OF-PERIOD RATE" :active="activeStep === 'anomaly'" detail-id="anomaly-rate" @open-detail="openDetail">
-            <template #header><span class="threshold-note">理想值 0%</span></template>
+          <PanelFrame title="账期外记录分布" eyebrow="OUT-OF-PERIOD RECORDS" :active="activeStep === 'anomaly'" detail-id="anomaly-rate" @open-detail="openDetail">
+            <template #header><span class="threshold-note">样本外 {{ dashboard.summary.anomalyCount.toLocaleString('zh-CN') }} 条</span></template>
             <AnomalyTrendChart :data="dashboard.trend" />
           </PanelFrame>
         </div>
@@ -316,7 +337,7 @@ const activeDetail = computed(() => {
     </main>
 
     <footer class="dashboard-footer">
-      <span>指标口径：流量统一为 bytes · 文件标称周期 2026-07 · 画像为可重叠多标签</span>
+      <span>指标口径：底层 bytes 聚合，展示按十进制 GB 换算 · 文件标称周期 2026-07</span>
       <span>真实样本的脱敏静态聚合 · 金额仅为情景估算</span>
     </footer>
 
@@ -327,4 +348,8 @@ const activeDetail = computed(() => {
 
     <CdrDetailDrawer :record="selectedRecord" @close="selectedRecord = null" />
   </div>
+
+  <Transition name="focus">
+    <DetailRouteView v-if="activeDetail" :detail="activeDetail" :origin="focusOrigin" @home="goHome" />
+  </Transition>
 </template>

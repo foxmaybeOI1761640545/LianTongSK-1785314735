@@ -11,7 +11,6 @@ const props = defineProps({
 const emit = defineEmits(['select'])
 
 const gdToHk = computed(() => props.flows.find((flow) => flow.direction === 'GD_TO_HK') ?? {})
-const hkToGd = computed(() => props.flows.find((flow) => flow.direction === 'HK_TO_GD') ?? {})
 
 function toggleDirection(direction) {
   emit('select', props.selected === direction ? 'ALL' : direction)
@@ -85,8 +84,8 @@ function toggleDirection(direction) {
         @click="toggleDirection('HK_TO_GD')"
       >
         <span class="direction-title">香港 <b>→</b> 广东</span>
-        <strong>{{ formatBytes(hkToGd.totalBytes) }}</strong>
-        <span>{{ Number(hkToGd.completedCount ?? 0).toLocaleString('zh-CN') }} 条 · 本样本无反向记录</span>
+        <strong class="no-coverage">未覆盖</strong>
+        <span>对侧样本未提供 · 不等于业务量为 0</span>
       </button>
     </div>
 

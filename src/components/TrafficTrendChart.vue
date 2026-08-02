@@ -31,7 +31,11 @@ const option = computed(() => ({
     {
       type: 'value',
       splitNumber: 3,
-      axisLabel: { color: '#6f91aa', fontSize: 10, formatter: (value) => `${Math.round(value / 1000)}k` },
+      axisLabel: {
+        color: '#6f91aa',
+        fontSize: 10,
+        formatter: (value) => value >= 1000 ? `${Number((value / 1000).toFixed(1))}k` : value.toLocaleString('zh-CN'),
+      },
       splitLine: { lineStyle: { color: 'rgba(80, 139, 177, .12)' } },
     },
     { type: 'value', show: false },

@@ -11,9 +11,9 @@ function queueSelect(record) {
   selectTimer = globalThis.setTimeout(() => emit('select', record), 220)
 }
 
-function openDetail(record) {
+function openDetail(record, event) {
   globalThis.clearTimeout(selectTimer)
-  emit('open-detail', record)
+  emit('open-detail', { target: record, origin: { x: event.clientX, y: event.clientY } })
 }
 
 onBeforeUnmount(() => globalThis.clearTimeout(selectTimer))
@@ -27,10 +27,10 @@ onBeforeUnmount(() => globalThis.clearTimeout(selectTimer))
       type="button"
       class="recent-row"
       @click="queueSelect(record)"
-      @dblclick.stop="openDetail(record)"
+      @dblclick.stop="openDetail(record, $event)"
     >
       <span :class="['status-dot', record.status === '处理中' ? 'processing' : 'pending']"></span>
-      <span class="recent-time">{{ record.time.slice(11, 16) }}</span>
+      <span class="recent-time">{{ record.lastActiveDay.slice(5) }}</span>
       <span class="recent-content"><strong>{{ record.phone }}</strong><small>{{ record.lastActiveDay }} · {{ record.id }}</small></span>
       <span class="recent-status">{{ record.status }}</span>
     </button>

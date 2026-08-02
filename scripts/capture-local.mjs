@@ -21,6 +21,14 @@ try {
   await detailPage.waitForTimeout(400)
   await detailPage.screenshot({ path: 'test-results/visual/dashboard-detail-1600x900.png', fullPage: true })
   await detailPage.close()
+
+  const focusPage = await browser.newPage({ viewport: { width: 1600, height: 900 } })
+  await focusPage.goto('http://127.0.0.1:4180/LianTongSK-1785314735/', { waitUntil: 'networkidle' })
+  await focusPage.locator('[data-testid="kpi-grid"] .kpi-card').first().dblclick()
+  await focusPage.locator('[data-testid="detail-focus"]').waitFor()
+  await focusPage.waitForTimeout(550)
+  await focusPage.screenshot({ path: 'test-results/visual/dashboard-focus-1600x900.png', fullPage: true })
+  await focusPage.close()
 } finally {
   await browser.close()
   await server.close()

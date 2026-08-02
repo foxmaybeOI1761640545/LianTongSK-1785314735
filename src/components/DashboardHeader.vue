@@ -87,7 +87,7 @@ const timeText = computed(() => new Intl.DateTimeFormat('zh-CN', {
       <span class="source-divider"></span>
       <span>口径版本：{{ source?.version ?? '—' }}</span>
       <span class="source-divider"></span>
-      <span>业务快照：{{ source?.snapshotAt ?? '—' }}</span>
+      <span>样本最大事件时间：{{ source?.snapshotAt ?? '—' }}</span>
     </div>
   </header>
 </template>

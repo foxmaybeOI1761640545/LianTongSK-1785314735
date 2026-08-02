@@ -16,6 +16,7 @@ describe('dashboard interactions', () => {
     expect(wrapper.emitted('select')).toHaveLength(1)
     await wrapper.trigger('dblclick')
     expect(wrapper.emitted('open-detail')).toHaveLength(1)
+    expect(wrapper.emitted('open-detail')[0][0].target.id).toBe('crossPeriod')
   })
 
   it('closes the evidence drawer with Escape', async () => {

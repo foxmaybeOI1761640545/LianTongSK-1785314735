@@ -1,7 +1,7 @@
 import dashboardSummary from '../data/real-dashboard-summary.json'
 import { DIRECTIONS, createEvidenceKpis } from '../utils/metrics.js'
 
-const SETTLEMENT_RATE_CNY_PER_GIB = 5
+const SETTLEMENT_RATE_CNY_PER_GB = 5
 const PROFILE_SUMMARY = Object.freeze({
   highValueUsers: 218,
   highValueTrafficShare: 0.9044392579485016,
@@ -16,6 +16,7 @@ const PROFILE_SUMMARY = Object.freeze({
 
 function emptySummary() {
   return {
+    hasSample: false,
     startDay: null,
     endDay: null,
     records: 0,
@@ -56,13 +57,14 @@ function buildTrend(range, hasRows) {
 }
 
 function buildQualityDistribution(summary) {
+  if (summary.hasSample === false) return []
   return [
-    { name: 'IMEI 字段缺失', value: summary.imeiMissingRecords },
-    { name: '00 点时间记录', value: summary.midnightRecords },
-    { name: '跨期记录', value: summary.outOfJulyRecords },
-    { name: '强重复候选', value: summary.strongDuplicatePairs },
-    { name: '高频低量用户', value: summary.highFrequencyLowVolumeUsers },
-  ].filter((item) => item.value > 0)
+    { id: 'imei-missing', name: 'IMEI 字段缺失', value: summary.imeiMissingRecords, unit: '条记录', level: 'warning', note: '源字段完整率 0%' },
+    { id: 'midnight-time', name: '时间集中在 00 点', value: summary.midnightRecords, unit: '条记录', level: 'warning', note: '不用于推断真实使用时段' },
+    { id: 'cross-period', name: '账期外记录', value: summary.outOfJulyRecords, unit: '条记录', level: 'attention', note: '事件月份不属于 2026-07' },
+    { id: 'exact-duplicate', name: '完全重复冗余', value: summary.exactDuplicateRows, unit: '条记录', level: 'attention', note: '排除自增主键后内容完全相同' },
+    { id: 'low-volume', name: '高频低量用户', value: summary.highFrequencyLowVolumeUsers, unit: '位用户', level: 'notice', note: '≥50 条且单条平均流量 <1 KiB' },
+  ]
 }
 
 function trafficIndex(record) {
@@ -112,8 +114,10 @@ function buildPipeline(summary) {
 }
 
 function buildSummary(summary) {
-  const estimatedPayable = (summary.bytes / 1024 ** 3) * SETTLEMENT_RATE_CNY_PER_GIB
+  const hasSample = summary.hasSample !== false
+  const estimatedPayable = hasSample ? (summary.bytes / 1000 ** 3) * SETTLEMENT_RATE_CNY_PER_GB : null
   return {
+    hasSample,
     completedCount: summary.records,
     anomalyCount: summary.outOfJulyRecords,
     totalBytes: summary.bytes,
@@ -121,7 +125,7 @@ function buildSummary(summary) {
     activeUsers: summary.users,
     highValueUsers: summary.top10Count,
     highValueTrafficShare: summary.top10TrafficShare,
-    gdReceivable: 0,
+    gdReceivable: null,
     hkPayable: estimatedPayable,
   }
 }
@@ -149,8 +153,8 @@ export class StaticSampleDataAdapter {
       summary,
       settlement: {
         kind: 'scenario',
-        rateCnyPerGiB: SETTLEMENT_RATE_CNY_PER_GIB,
-        note: '按 1 GB = ¥5 计算；缺少正式结算协议与对侧话单，金额仍为情景估算',
+        rateCnyPerGB: SETTLEMENT_RATE_CNY_PER_GB,
+        note: '按十进制 1 GB = 1,000,000,000 B、¥5/GB 计算；缺少正式结算协议与对侧话单，金额仍为情景估算',
       },
       kpis: createEvidenceKpis(evidenceSummary),
       trend: buildTrend(range, hasRows),
@@ -158,6 +162,7 @@ export class StaticSampleDataAdapter {
       flows: [
         {
           direction: DIRECTIONS.GD_TO_HK,
+          coverage: 'available',
           completedCount: sourceSummary.records,
           totalBytes: sourceSummary.bytes,
           userCount: sourceSummary.users,
@@ -165,10 +170,11 @@ export class StaticSampleDataAdapter {
         },
         {
           direction: DIRECTIONS.HK_TO_GD,
-          completedCount: 0,
-          totalBytes: 0,
-          userCount: 0,
-          networkShare: 0,
+          coverage: 'missing',
+          completedCount: null,
+          totalBytes: null,
+          userCount: null,
+          networkShare: null,
         },
       ],
       highValueRecords,

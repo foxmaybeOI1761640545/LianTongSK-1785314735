@@ -51,7 +51,8 @@ describe('dashboard metric contract', () => {
   })
 
   it('formats traffic and calculates cross-side difference', () => {
-    expect(formatBytes(10 * 1024 ** 3)).toBe('10.0 GB')
+    expect(formatBytes(10 * 1000 ** 3)).toBe('10.0 GB')
+    expect(formatBytes(23685836196, 2)).toBe('23.69 GB')
     expect(trafficDifferencePercent(100, 80)).toBeCloseTo(20)
   })
 })

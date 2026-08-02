@@ -71,6 +71,7 @@ export function createKpis(current, previous) {
 }
 
 export function createEvidenceKpis(summary) {
+  const unavailable = summary.hasSample === false
   const specs = [
     ['completed', '样本话单总量', summary.records, (value) => value.toLocaleString('zh-CN'), '真实聚合｜当前筛选范围内的话单记录数', 'cyan'],
     ['traffic', '漫游总流量', summary.bytes, formatBytes, '真实聚合｜RG 使用量总量字段求和', 'blue'],
@@ -84,7 +85,7 @@ export function createEvidenceKpis(summary) {
     id,
     label,
     value,
-    displayValue: formatter(value),
+    displayValue: unavailable ? '未覆盖' : formatter(value),
     trend: null,
     trendGood: true,
     definition,

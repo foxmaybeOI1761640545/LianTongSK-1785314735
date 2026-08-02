@@ -1,5 +1,5 @@
 <script setup>
-defineProps({
+const props = defineProps({
   title: { type: String, required: true },
   eyebrow: { type: String, default: '' },
   active: { type: Boolean, default: false },
@@ -7,14 +7,19 @@ defineProps({
   detailId: { type: String, default: '' },
 })
 
-defineEmits(['open-detail'])
+const emit = defineEmits(['open-detail'])
+
+function openDetail(event) {
+  if (!props.detailId) return
+  emit('open-detail', { target: props.detailId, origin: { x: event.clientX, y: event.clientY } })
+}
 </script>
 
 <template>
   <section
     class="panel-frame"
     :class="{ 'is-active': active, 'is-compact': compact, 'is-detail-enabled': detailId }"
-    @dblclick.stop="detailId && $emit('open-detail', detailId)"
+    @dblclick.stop="openDetail"
   >
     <div class="panel-corner panel-corner--tl"></div>
     <div class="panel-corner panel-corner--br"></div>

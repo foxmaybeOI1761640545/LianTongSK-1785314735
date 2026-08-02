@@ -6,28 +6,26 @@ const props = defineProps({
   summary: { type: Object, default: () => ({}) },
   scenario: { type: Object, default: () => ({}) },
 })
-const net = computed(() => Number(props.summary.gdReceivable ?? 0) - Number(props.summary.hkPayable ?? 0))
-const maxValue = computed(() => Math.max(props.summary.gdReceivable ?? 0, props.summary.hkPayable ?? 0, 1))
+const estimatedExpense = computed(() => Number.isFinite(props.summary.hkPayable) ? props.summary.hkPayable : null)
 </script>
 
 <template>
   <div class="settlement-panel" data-testid="settlement-panel">
-    <div class="settlement-figure income">
-      <span>情景结算收入</span>
-      <strong>{{ formatCompactCurrency(summary.gdReceivable) }}</strong>
-      <small>样本无反向记录，按 ¥0 计</small>
-      <i><b :style="{ width: `${(summary.gdReceivable / maxValue) * 100}%` }"></b></i>
-    </div>
-    <div class="settlement-net">
-      <span>情景结算净额</span>
-      <strong :class="net >= 0 ? 'positive' : 'negative'">{{ formatCompactCurrency(net) }}</strong>
-      <small>假设 1 GB = ¥{{ scenario.rateCnyPerGiB ?? 0 }}</small>
-    </div>
     <div class="settlement-figure expense">
-      <span>情景结算支出</span>
-      <strong>{{ formatCompactCurrency(summary.hkPayable) }}</strong>
-      <small>真实流量 × ¥{{ scenario.rateCnyPerGiB ?? 0 }} / GB</small>
-      <i><b :style="{ width: `${(summary.hkPayable / maxValue) * 100}%` }"></b></i>
+      <span>样本侧估算支出</span>
+      <strong>{{ estimatedExpense === null ? '未覆盖' : formatCompactCurrency(estimatedExpense) }}</strong>
+      <small>{{ estimatedExpense === null ? '当前方向没有样本' : `十进制流量 × ¥${scenario.rateCnyPerGB ?? 0} / GB` }}</small>
+      <i v-if="estimatedExpense !== null"><b style="width: 100%"></b></i>
+    </div>
+    <div class="settlement-net unavailable">
+      <span>对侧收入</span>
+      <strong>未提供</strong>
+      <small>缺少香港归属用户反向话单</small>
+    </div>
+    <div class="settlement-net unavailable">
+      <span>双向结算净额</span>
+      <strong>暂不可计算</strong>
+      <small>对侧数据到齐后再进行轧差</small>
     </div>
   </div>
 </template>

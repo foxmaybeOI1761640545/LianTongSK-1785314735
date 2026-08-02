@@ -7,12 +7,16 @@ const props = defineProps({
   index: { type: Number, default: 0 },
 })
 
-defineEmits(['select', 'open-detail'])
+const emit = defineEmits(['select', 'open-detail'])
 
 const hasTrend = computed(() => Number.isFinite(props.kpi.trend))
 const trendLabel = computed(() => hasTrend.value
   ? `${props.kpi.trend >= 0 ? '较上期上升' : '较上期下降'} ${Math.abs(props.kpi.trend).toFixed(1)}%`
   : '当前筛选范围的样本快照')
+
+function openDetail(event) {
+  emit('open-detail', { target: props.kpi, origin: { x: event.clientX, y: event.clientY } })
+}
 </script>
 
 <template>
@@ -23,7 +27,7 @@ const trendLabel = computed(() => hasTrend.value
     :aria-label="`${kpi.label}：${kpi.displayValue}，${trendLabel}`"
     :data-kpi="kpi.id"
     @click="$emit('select', kpi)"
-    @dblclick.stop="$emit('open-detail', kpi)"
+    @dblclick.stop="openDetail"
   >
     <span class="kpi-glow"></span>
     <span class="kpi-index">{{ String(index).padStart(2, '0') }}</span>
