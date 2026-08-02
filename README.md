@@ -2,7 +2,7 @@
 
 面向“粤港一卡双号”场景的 Vue 3 可视化大屏 Demo。页面使用真实话单的脱敏静态聚合，展示使用规模、流量集中度、数据质量和规则画像，并将缺少资费支撑的金额严格标注为情景估算。
 
-> 当前版本不连接生产数据库，不包含真实用户号码、IMSI、IP 或位置明细，也不代表生产 AI 模型或 DataEase 正式数据源已经上线。指标来源分层见 [大屏真实数据接入与指标溯源](docs/REAL_DATA_METRIC_PROVENANCE.md)。
+> 当前版本不连接生产数据库，只展示真实号码的 `前三位 + **** + 后四位` 脱敏形式，不包含完整号码、IMSI、IP 或位置明细，也不代表生产 AI 模型或 DataEase 正式数据源已经上线。指标来源分层见 [大屏真实数据接入与指标溯源](docs/REAL_DATA_METRIC_PROVENANCE.md)。
 
 ## 功能
 
@@ -59,7 +59,7 @@ dashboardDataAdapter.loadDashboardData(filters)
 - 所有 `VITE_*` 变量都可能出现在浏览器构建产物中；
 - 禁止在前端保存 GitHub PAT、DataEase APP Secret、数据库密码或服务端 Token；
 - 需要动态签发 Token 或访问私有数据库时，必须增加后端或 Serverless 代理；
-- 仓库只保存脱敏聚合 JSON，不提交原始 Excel、号码、IMSI、IP、PDP 地址或位置明细。
+- 仓库只保存脱敏聚合 JSON 和中间四位掩码号码，不提交原始 Excel、完整号码、IMSI、IP、PDP 地址或位置明细。
 
 ## 已知限制
 

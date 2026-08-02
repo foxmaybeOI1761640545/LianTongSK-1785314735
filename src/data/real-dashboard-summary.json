@@ -20,6 +20,7 @@
       "topRecords": [
         {
           "rank": 1,
+          "maskedPhone": "131****6407",
           "bytes": 564869365,
           "records": 689,
           "activeDays": 5,
@@ -30,6 +31,7 @@
         },
         {
           "rank": 2,
+          "maskedPhone": "131****0050",
           "bytes": 287933995,
           "records": 352,
           "activeDays": 3,
@@ -40,6 +42,7 @@
         },
         {
           "rank": 3,
+          "maskedPhone": "131****8779",
           "bytes": 259902534,
           "records": 317,
           "activeDays": 6,
@@ -50,6 +53,7 @@
         },
         {
           "rank": 4,
+          "maskedPhone": "132****5280",
           "bytes": 238572612,
           "records": 291,
           "activeDays": 5,
@@ -60,6 +64,7 @@
         },
         {
           "rank": 5,
+          "maskedPhone": "131****9125",
           "bytes": 206600308,
           "records": 252,
           "activeDays": 1,
@@ -70,6 +75,7 @@
         },
         {
           "rank": 6,
+          "maskedPhone": "132****2506",
           "bytes": 195133049,
           "records": 238,
           "activeDays": 3,
@@ -80,6 +86,7 @@
         },
         {
           "rank": 7,
+          "maskedPhone": "176****0940",
           "bytes": 186123619,
           "records": 227,
           "activeDays": 1,
@@ -90,6 +97,7 @@
         },
         {
           "rank": 8,
+          "maskedPhone": "131****9535",
           "bytes": 145933884,
           "records": 178,
           "activeDays": 2,
@@ -100,6 +108,7 @@
         },
         {
           "rank": 9,
+          "maskedPhone": "131****1419",
           "bytes": 130369080,
           "records": 159,
           "activeDays": 2,
@@ -110,6 +119,7 @@
         },
         {
           "rank": 10,
+          "maskedPhone": "131****8805",
           "bytes": 130352217,
           "records": 159,
           "activeDays": 2,
@@ -138,6 +148,7 @@
       "topRecords": [
         {
           "rank": 1,
+          "maskedPhone": "131****6407",
           "bytes": 615311011,
           "records": 752,
           "activeDays": 7,
@@ -148,6 +159,7 @@
         },
         {
           "rank": 2,
+          "maskedPhone": "132****5280",
           "bytes": 410727510,
           "records": 501,
           "activeDays": 11,
@@ -158,6 +170,7 @@
         },
         {
           "rank": 3,
+          "maskedPhone": "176****7221",
           "bytes": 381457216,
           "records": 466,
           "activeDays": 9,
@@ -168,6 +181,7 @@
         },
         {
           "rank": 4,
+          "maskedPhone": "131****8779",
           "bytes": 373859544,
           "records": 456,
           "activeDays": 12,
@@ -178,6 +192,7 @@
         },
         {
           "rank": 5,
+          "maskedPhone": "131****9535",
           "bytes": 314797381,
           "records": 384,
           "activeDays": 3,
@@ -188,6 +203,7 @@
         },
         {
           "rank": 6,
+          "maskedPhone": "176****0940",
           "bytes": 312387038,
           "records": 382,
           "activeDays": 3,
@@ -198,6 +214,7 @@
         },
         {
           "rank": 7,
+          "maskedPhone": "131****0050",
           "bytes": 287933995,
           "records": 352,
           "activeDays": 3,
@@ -208,6 +225,7 @@
         },
         {
           "rank": 8,
+          "maskedPhone": "176****5979",
           "bytes": 286962546,
           "records": 350,
           "activeDays": 5,
@@ -218,6 +236,7 @@
         },
         {
           "rank": 9,
+          "maskedPhone": "131****7717",
           "bytes": 219729990,
           "records": 268,
           "activeDays": 9,
@@ -228,6 +247,7 @@
         },
         {
           "rank": 10,
+          "maskedPhone": "131****9125",
           "bytes": 206600308,
           "records": 252,
           "activeDays": 1,
@@ -256,6 +276,7 @@
       "topRecords": [
         {
           "rank": 1,
+          "maskedPhone": "131****6407",
           "bytes": 931157886,
           "records": 1138,
           "activeDays": 13,
@@ -266,6 +287,7 @@
         },
         {
           "rank": 2,
+          "maskedPhone": "132****5280",
           "bytes": 863225751,
           "records": 1053,
           "activeDays": 19,
@@ -276,6 +298,7 @@
         },
         {
           "rank": 3,
+          "maskedPhone": "131****8779",
           "bytes": 810860175,
           "records": 989,
           "activeDays": 20,
@@ -286,6 +309,7 @@
         },
         {
           "rank": 4,
+          "maskedPhone": "131****6802",
           "bytes": 673908918,
           "records": 822,
           "activeDays": 1,
@@ -296,6 +320,7 @@
         },
         {
           "rank": 5,
+          "maskedPhone": "131****7739",
           "bytes": 551791854,
           "records": 674,
           "activeDays": 6,
@@ -306,6 +331,7 @@
         },
         {
           "rank": 6,
+          "maskedPhone": "176****3798",
           "bytes": 527983699,
           "records": 644,
           "activeDays": 5,
@@ -316,6 +342,7 @@
         },
         {
           "rank": 7,
+          "maskedPhone": "176****7221",
           "bytes": 497065452,
           "records": 607,
           "activeDays": 14,
@@ -326,6 +353,7 @@
         },
         {
           "rank": 8,
+          "maskedPhone": "176****5186",
           "bytes": 408311523,
           "records": 498,
           "activeDays": 2,
@@ -336,6 +364,7 @@
         },
         {
           "rank": 9,
+          "maskedPhone": "132****9073",
           "bytes": 342711996,
           "records": 418,
           "activeDays": 6,
@@ -346,6 +375,7 @@
         },
         {
           "rank": 10,
+          "maskedPhone": "131****7717",
           "bytes": 341888625,
           "records": 417,
           "activeDays": 14,
@@ -374,6 +404,7 @@
       "topRecords": [
         {
           "rank": 1,
+          "maskedPhone": "131****6407",
           "bytes": 931157886,
           "records": 1138,
           "activeDays": 13,
@@ -384,6 +415,7 @@
         },
         {
           "rank": 2,
+          "maskedPhone": "132****5280",
           "bytes": 891909135,
           "records": 1088,
           "activeDays": 21,
@@ -394,6 +426,7 @@
         },
         {
           "rank": 3,
+          "maskedPhone": "131****8779",
           "bytes": 853532654,
           "records": 1042,
           "activeDays": 23,
@@ -404,6 +437,7 @@
         },
         {
           "rank": 4,
+          "maskedPhone": "131****6802",
           "bytes": 673908918,
           "records": 822,
           "activeDays": 1,
@@ -414,6 +448,7 @@
         },
         {
           "rank": 5,
+          "maskedPhone": "131****7739",
           "bytes": 551791854,
           "records": 674,
           "activeDays": 6,
@@ -424,6 +459,7 @@
         },
         {
           "rank": 6,
+          "maskedPhone": "176****3798",
           "bytes": 527983699,
           "records": 644,
           "activeDays": 5,
@@ -434,6 +470,7 @@
         },
         {
           "rank": 7,
+          "maskedPhone": "176****7221",
           "bytes": 497885092,
           "records": 608,
           "activeDays": 15,
@@ -444,6 +481,7 @@
         },
         {
           "rank": 8,
+          "maskedPhone": "176****5186",
           "bytes": 408311523,
           "records": 498,
           "activeDays": 2,
@@ -454,6 +492,7 @@
         },
         {
           "rank": 9,
+          "maskedPhone": "176****8818",
           "bytes": 400035888,
           "records": 488,
           "activeDays": 3,
@@ -464,6 +503,7 @@
         },
         {
           "rank": 10,
+          "maskedPhone": "131****7717",
           "bytes": 355824766,
           "records": 434,
           "activeDays": 16,

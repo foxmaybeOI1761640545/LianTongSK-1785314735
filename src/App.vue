@@ -256,7 +256,7 @@ const activeDetail = computed(() => {
     />
 
     <div v-if="loading && !dashboard" class="loading-state" aria-live="polite">
-      <span class="loading-ring"></span><strong>正在装载脱敏聚合数据</strong><small>StaticSampleDataAdapter · v2026.08.01</small>
+      <span class="loading-ring"></span><strong>正在装载脱敏聚合数据</strong><small>StaticSampleDataAdapter · v2026.08.02</small>
     </div>
     <div v-else-if="error && !dashboard" class="error-state" role="alert">
       <strong>数据装载失败</strong><span>{{ error }}</span><button type="button" @click="reload">重新加载</button>

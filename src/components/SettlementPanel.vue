@@ -21,12 +21,12 @@ const maxValue = computed(() => Math.max(props.summary.gdReceivable ?? 0, props.
     <div class="settlement-net">
       <span>情景结算净额</span>
       <strong :class="net >= 0 ? 'positive' : 'negative'">{{ formatCompactCurrency(net) }}</strong>
-      <small>假设 {{ scenario.rateCnyPerMiB ?? 0 }} 元 / MiB</small>
+      <small>假设 1 GB = ¥{{ scenario.rateCnyPerGiB ?? 0 }}</small>
     </div>
     <div class="settlement-figure expense">
       <span>情景结算支出</span>
       <strong>{{ formatCompactCurrency(summary.hkPayable) }}</strong>
-      <small>真实流量 × 假设计费单价</small>
+      <small>真实流量 × ¥{{ scenario.rateCnyPerGiB ?? 0 }} / GB</small>
       <i><b :style="{ width: `${(summary.hkPayable / maxValue) * 100}%` }"></b></i>
     </div>
   </div>

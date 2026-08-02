@@ -23,7 +23,7 @@ describe('dashboard interactions', () => {
       props: {
         record: {
           id: 'HV-ALL-001', direction: 'GD_TO_HK', riskScore: 96,
-          anomalyType: '高流量价值关注', rule: 'Top 10%', phone: '高价值样本 #01', subscriberTier: 'Top 10% 高流量用户', status: '画像关注',
+          anomalyType: '高流量价值关注', rule: 'Top 10%', phone: '131****6407', subscriberTier: 'Top 10% 高流量用户', status: '画像关注',
           homeRegion: '广东侧用户', visitedRegion: '香港网络', totalBytes: 931157886, recordCount: 1138,
           activeDays: 13, lastActiveDay: '2026-07-31', averageRecordBytes: 818240,
           trafficShare: 0.0393, weekdayShare: 0.9102, cause: '依据', impact: '影响', suggestion: '建议',

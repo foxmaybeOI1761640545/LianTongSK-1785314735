@@ -1,7 +1,7 @@
 import dashboardSummary from '../data/real-dashboard-summary.json'
 import { DIRECTIONS, createEvidenceKpis } from '../utils/metrics.js'
 
-const SETTLEMENT_RATE_CNY_PER_MIB = 0.08
+const SETTLEMENT_RATE_CNY_PER_GIB = 5
 const PROFILE_SUMMARY = Object.freeze({
   highValueUsers: 218,
   highValueTrafficShare: 0.9044392579485016,
@@ -75,7 +75,7 @@ function buildHighValueRecords(summary, range) {
     time: `${record.lastDay} 00:00:00`,
     lastActiveDay: record.lastDay,
     direction: DIRECTIONS.GD_TO_HK,
-    phone: `高价值样本 #${String(record.rank).padStart(2, '0')}`,
+    phone: record.maskedPhone,
     subscriberTier: 'Top 10% 高流量用户',
     homeRegion: '广东侧用户',
     visitedRegion: '香港网络',
@@ -112,7 +112,7 @@ function buildPipeline(summary) {
 }
 
 function buildSummary(summary) {
-  const estimatedPayable = (summary.bytes / 1024 ** 2) * SETTLEMENT_RATE_CNY_PER_MIB
+  const estimatedPayable = (summary.bytes / 1024 ** 3) * SETTLEMENT_RATE_CNY_PER_GIB
   return {
     completedCount: summary.records,
     anomalyCount: summary.outOfJulyRecords,
@@ -140,17 +140,17 @@ export class StaticSampleDataAdapter {
         kind: 'static-sample',
         label: '真实样本 · 脱敏聚合',
         message: hasRows
-          ? '源自 31,410 条话单的静态聚合，不发布号码、IMSI、IP 或位置明细'
+          ? '源自 31,410 条话单的静态聚合，仅发布中间四位掩码号码'
           : '当前样本不含“香港用户 → 广东”方向记录',
-        version: 'v2026.08.01',
+        version: 'v2026.08.02',
         snapshotAt: '2026-08-01 00:11:33',
       },
       filters: { ...filters, range },
       summary,
       settlement: {
         kind: 'scenario',
-        rateCnyPerMiB: SETTLEMENT_RATE_CNY_PER_MIB,
-        note: '缺少结算资费与对侧话单，金额仅为流量乘假设单价的情景估算',
+        rateCnyPerGiB: SETTLEMENT_RATE_CNY_PER_GIB,
+        note: '按 1 GB = ¥5 计算；缺少正式结算协议与对侧话单，金额仍为情景估算',
       },
       kpis: createEvidenceKpis(evidenceSummary),
       trend: buildTrend(range, hasRows),

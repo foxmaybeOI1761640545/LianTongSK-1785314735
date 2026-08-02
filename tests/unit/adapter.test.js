@@ -12,6 +12,10 @@ describe('StaticSampleDataAdapter', () => {
     expect(first.summary.completedCount).toBe(31410)
     expect(first.summary.totalBytes).toBe(23685836196)
     expect(first.summary.activeUsers).toBe(2177)
+    expect(first.settlement.rateCnyPerGiB).toBe(5)
+    expect(first.summary.hkPayable).toBeCloseTo(110.295769739896)
+    expect(first.highValueRecords[0].phone).toBe('131****6407')
+    expect(first.highValueRecords.every((record) => /^1\d{2}\*{4}\d{4}$/.test(record.phone))).toBe(true)
     expect(first.kpis).toHaveLength(6)
   })
 

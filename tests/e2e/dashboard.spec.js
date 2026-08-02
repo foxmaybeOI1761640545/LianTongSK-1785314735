@@ -9,6 +9,8 @@ test('loads the complete data insight dashboard without console errors', async (
   await expect(page.locator('[data-kpi="completed"]')).toContainText('31,410')
   await expect(page.locator('[data-kpi="users"]')).toContainText('2,177')
   await expect(page.locator('[data-kpi="concentration"]')).toContainText('90.44%')
+  await expect(page.getByTestId('high-value-ranking').locator('.rank-main strong').first()).toHaveText(/^1\d{2}\*{4}\d{4}$/)
+  await expect(page.getByTestId('settlement-panel')).toContainText('1 GB = ¥5')
   await expect(page.getByTestId('kpi-grid').locator('.kpi-card')).toHaveCount(6)
   await expect(page.locator('canvas')).toHaveCount(3)
   await expect(page.getByTestId('flow-map')).toBeVisible()
