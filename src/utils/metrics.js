@@ -1,121 +1,17 @@
 import { formatBytes } from './traffic.js'
-import { formatCompactCurrency } from './currency.js'
 
-export const DIRECTIONS = {
-  ALL: 'ALL',
-  GD_TO_HK: 'GD_TO_HK',
-  HK_TO_GD: 'HK_TO_GD',
-}
+export const DIRECTIONS = { GD_TO_HK: 'GD_TO_HK' }
+export const SEGMENTS = { ALL: 'ALL', HIGH_USAGE: 'HIGH_USAGE', RECALL: 'RECALL', GROWTH: 'GROWTH', ENTERPRISE: 'ENTERPRISE' }
 
-export function filterDailyRows(rows, filters) {
-  const days = Number.parseInt(filters.range, 10) || 7
-  const dates = [...new Set(rows.map((row) => row.date))].sort()
-  const selectedDates = new Set(dates.slice(-days))
-  return rows.filter(
-    (row) => selectedDates.has(row.date) && (filters.direction === DIRECTIONS.ALL || row.direction === filters.direction),
-  )
-}
-
-export function sum(rows, key) {
-  return rows.reduce((total, row) => total + (Number(row[key]) || 0), 0)
-}
-
-export function aggregateRows(rows) {
-  const completedCount = sum(rows, 'completedCount')
-  const anomalyCount = sum(rows, 'anomalyCount')
-  const totalBytes = sum(rows, 'totalBytes')
-  const differenceAmount = sum(rows, 'differenceAmount')
-  const highValueRiskCount = sum(rows, 'highValueRiskCount')
-  const recoveredAmount = sum(rows, 'recoveredAmount')
-  const manualHoursSaved = sum(rows, 'manualHoursSaved')
-
-  return {
-    completedCount,
-    anomalyCount,
-    totalBytes,
-    anomalyRate: completedCount ? (anomalyCount / completedCount) * 100 : 0,
-    differenceAmount,
-    highValueRiskCount,
-    recoveredAmount,
-    manualHoursSaved,
-    gdReceivable: sum(rows, 'gdReceivable'),
-    hkPayable: sum(rows, 'hkPayable'),
-  }
-}
-
-function trendValue(current, previous) {
-  if (!previous) return 0
-  return ((current - previous) / previous) * 100
-}
-
-export function createKpis(current, previous) {
+export function createExperienceKpis(summary, profile) {
+  const averageBytes = summary.users ? summary.bytes / summary.users : 0
   const specs = [
-    ['completed', '已完成稽核话单', current.completedCount, previous.completedCount, (value) => value.toLocaleString('zh-CN'), '已完成双方比对并输出稽核结论的话单总数', 'cyan', false],
-    ['traffic', '双向漫游总流量', current.totalBytes, previous.totalBytes, formatBytes, '底层统一以 bytes 聚合，展示层自动换算', 'blue', false],
-    ['anomaly', '异常话单', current.anomalyCount, previous.anomalyCount, (value) => value.toLocaleString('zh-CN'), '命中至少一项稽核规则的话单数量', 'red', true],
-    ['rate', '异常率', current.anomalyRate, previous.anomalyRate, (value) => `${value.toFixed(2)}%`, '异常话单数 ÷ 已完成稽核话单数', 'amber', true],
-    ['difference', '结算差异金额', current.differenceAmount, previous.differenceAmount, formatCompactCurrency, '双方话单逐条比对后的金额差异绝对值', 'indigo', true],
-    ['highValue', '高价值风险话单', current.highValueRiskCount, previous.highValueRiskCount, (value) => value.toLocaleString('zh-CN'), '金额、流量或差异命中高价值阈值的话单', 'green', true],
-  ]
-
-  return specs.map(([id, label, value, oldValue, formatter, definition, tone, betterWhenLower]) => ({
-    id,
-    label,
-    value,
-    displayValue: formatter(value),
-    trend: trendValue(value, oldValue),
-    trendGood: betterWhenLower ? value <= oldValue : value >= oldValue,
-    definition,
-    tone,
-  }))
-}
-
-export function createEvidenceKpis(summary) {
-  const unavailable = summary.hasSample === false
-  const specs = [
-    ['completed', '样本话单总量', summary.records, (value) => value.toLocaleString('zh-CN'), '真实聚合｜当前筛选范围内的话单记录数', 'cyan'],
+    ['users', '活跃用户', summary.users, (value) => value.toLocaleString('zh-CN'), '真实聚合｜计费号码与 IMSI 一对一去重', 'cyan'],
     ['traffic', '漫游总流量', summary.bytes, formatBytes, '真实聚合｜RG 使用量总量字段求和', 'blue'],
-    ['users', '活跃用户数', summary.users, (value) => value.toLocaleString('zh-CN'), '真实聚合｜计费号码与 IMSI 一对一去重', 'green'],
-    ['crossPeriod', '跨期记录', summary.outOfJulyRecords, (value) => value.toLocaleString('zh-CN'), '规则推导｜事件月份不等于文件标称月份 2026-07', 'red'],
-    ['highValue', 'Top 10% 用户', summary.top10Count, (value) => value.toLocaleString('zh-CN'), '规则推导｜按用户周期流量降序取前 10%', 'indigo'],
-    ['concentration', '头部流量贡献', summary.top10TrafficShare, (value) => `${(value * 100).toFixed(2)}%`, '规则推导｜Top 10% 用户流量 ÷ 总流量', 'amber'],
+    ['averageTraffic', '人均漫游流量', averageBytes, (value) => formatBytes(value, 1), '真实聚合｜漫游总流量 ÷ 活跃用户数', 'green'],
+    ['highUsage', '高用量重点用户', summary.top10Count, (value) => value.toLocaleString('zh-CN'), '行为规则｜按当前周期用户流量降序取前 10%', 'indigo'],
+    ['recall', '低活跃召回候选', profile.recallCandidates, (value) => value.toLocaleString('zh-CN'), '月度规则｜低流量且近期活跃不足，仅作召回候选', 'amber'],
+    ['concentration', '头部流量贡献', summary.top10TrafficShare, (value) => `${(value * 100).toFixed(2)}%`, '真实聚合｜Top 10% 用户流量 ÷ 总流量', 'red'],
   ]
-
-  return specs.map(([id, label, value, formatter, definition, tone]) => ({
-    id,
-    label,
-    value,
-    displayValue: unavailable ? '未覆盖' : formatter(value),
-    trend: null,
-    trendGood: true,
-    definition,
-    tone,
-  }))
-}
-
-export function groupDaily(rows) {
-  const grouped = new Map()
-  for (const row of rows) {
-    const current = grouped.get(row.date) ?? { date: row.date, completedCount: 0, anomalyCount: 0, totalBytes: 0 }
-    current.completedCount += row.completedCount
-    current.anomalyCount += row.anomalyCount
-    current.totalBytes += row.totalBytes
-    grouped.set(row.date, current)
-  }
-  return [...grouped.values()].map((row) => ({
-    ...row,
-    anomalyRate: row.completedCount ? (row.anomalyCount / row.completedCount) * 100 : 0,
-  }))
-}
-
-export function groupAnomalies(rows) {
-  const totals = new Map()
-  for (const row of rows) {
-    for (const [type, count] of Object.entries(row.anomalyBreakdown)) {
-      totals.set(type, (totals.get(type) ?? 0) + count)
-    }
-  }
-  return [...totals.entries()]
-    .map(([name, value]) => ({ name, value }))
-    .sort((a, b) => b.value - a.value)
+  return specs.map(([id, label, value, formatter, definition, tone]) => ({ id, label, value, displayValue: formatter(value), trend: null, trendGood: true, definition, tone }))
 }
