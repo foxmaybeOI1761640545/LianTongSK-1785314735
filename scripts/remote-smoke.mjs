@@ -66,7 +66,11 @@ try {
   const referencePanel = page.locator('[data-detail-id="flow-topology"]')
   const referenceBefore = await referencePanel.evaluate((element) => {
     const rect = element.getBoundingClientRect()
-    return { width: rect.width, height: rect.height, text: element.textContent }
+    return {
+      width: rect.width,
+      height: rect.height,
+      title: element.querySelector('h2')?.textContent,
+    }
   })
 
   await referencePanel.dblclick()
@@ -77,7 +81,7 @@ try {
     return {
       width: rect.width,
       height: rect.height,
-      text: element.textContent,
+      title: element.querySelector('h2')?.textContent,
       scale: Number(host?.style.getPropertyValue('--panel-focus-scale')),
     }
   })
@@ -91,6 +95,9 @@ try {
   if (Math.abs(referenceAfter.height - referenceBefore.height * referenceAfter.scale) > 2) {
     throw new Error('Reference panel height does not match its calculated scale')
   }
+  if (referenceAfter.title !== referenceBefore.title) {
+    throw new Error('Reference panel title changed during proportional scaling')
+  }
 
   await page.keyboard.press('Escape')
   await page.getByTestId('panel-focus-layer').waitFor({ state: 'hidden' })
@@ -101,7 +108,7 @@ try {
     return {
       width: rect.width,
       height: rect.height,
-      text: element.textContent,
+      title: element.querySelector('h2')?.textContent,
       canvasCount: element.querySelectorAll('canvas').length,
     }
   })
@@ -114,7 +121,7 @@ try {
     return {
       width: rect.width,
       height: rect.height,
-      text: element.textContent,
+      title: element.querySelector('h2')?.textContent,
       canvasCount: element.querySelectorAll('canvas').length,
       scale: Number(host?.style.getPropertyValue('--panel-focus-scale')),
     }
@@ -129,8 +136,8 @@ try {
   if (Math.abs(trendAfter.height - trendBefore.height * referenceAfter.scale) > 2) {
     throw new Error('Trend panel height does not use the shared scale')
   }
-  if (trendAfter.text !== trendBefore.text) {
-    throw new Error('Focused panel content changed during proportional scaling')
+  if (trendAfter.title !== trendBefore.title) {
+    throw new Error('Focused panel title changed during proportional scaling')
   }
   if (trendAfter.canvasCount !== trendBefore.canvasCount) {
     throw new Error('Focused panel chart content changed during proportional scaling')
