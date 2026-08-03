@@ -75,6 +75,11 @@ describe('dashboard focus interactions', () => {
     await nextTick()
     expect(sharedPanelFocusScale.value).toBe(1.6)
 
+    await reference.setProps({ focused: true })
+    await reference.setProps({ focused: false })
+    await nextTick()
+    expect(sharedPanelFocusScale.value).toBe(1.6)
+
     const wrapper = mount(PanelFrame, {
       attachTo: document.body,
       props: {
