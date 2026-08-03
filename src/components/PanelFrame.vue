@@ -9,6 +9,7 @@ import {
 } from 'vue'
 import {
   PANEL_FOCUS_REFERENCE_ID,
+  resetSharedPanelFocusScale,
   setSharedPanelFocusScale,
   sharedPanelFocusScale,
 } from '../composables/usePanelFocusScale.js'
@@ -29,7 +30,7 @@ const emit = defineEmits(['open-detail', 'close-detail'])
 const panelElement = ref(null)
 const originalSize = ref({ width: 0, height: 0 })
 const viewportSize = ref({ width: 0, height: 0 })
-let resizeObserver = null
+let remeasureAfterClose = false
 
 const isScaleReference = computed(
   () => props.detailId === props.focusScaleReferenceId,
@@ -78,8 +79,9 @@ function resolvedScale(size = originalSize.value) {
   return readReferenceScale() || calculateScale(size)
 }
 
-async function measureReferenceScale() {
+async function measureReferenceScale({ force = false } = {}) {
   if (!isScaleReference.value || props.focused) return
+  if (!force && sharedPanelFocusScale.value >= 1) return
 
   updateViewportSize()
   await nextTick()
@@ -131,7 +133,15 @@ function closeDetail(event) {
 
 async function handleResize() {
   updateViewportSize()
-  await measureReferenceScale()
+  if (!isScaleReference.value) return
+
+  if (props.focused) {
+    remeasureAfterClose = true
+    return
+  }
+
+  resetSharedPanelFocusScale()
+  await measureReferenceScale({ force: true })
 }
 
 watch(
@@ -144,26 +154,21 @@ watch(
       return
     }
 
-    await measureReferenceScale()
+    if (isScaleReference.value && remeasureAfterClose) {
+      remeasureAfterClose = false
+      resetSharedPanelFocusScale()
+      await measureReferenceScale({ force: true })
+    }
   },
 )
 
 onMounted(async () => {
   updateViewportSize()
   await measureReferenceScale()
-
-  if (isScaleReference.value && globalThis.ResizeObserver) {
-    resizeObserver = new globalThis.ResizeObserver(() => {
-      void measureReferenceScale()
-    })
-    if (panelElement.value) resizeObserver.observe(panelElement.value)
-  }
-
   globalThis.addEventListener('resize', handleResize)
 })
 
 onBeforeUnmount(() => {
-  resizeObserver?.disconnect()
   globalThis.removeEventListener('resize', handleResize)
 })
 </script>
