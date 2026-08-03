@@ -1,0 +1,106 @@
+name: Inspect Fixed Main Workflow
+
+on:
+  push:
+    branches:
+      - future/1785754980/refine-region-shapes-and-focus-scale
+
+permissions:
+  actions: read
+  contents: write
+
+jobs:
+  inspect:
+    if: >-
+      github.actor != 'github-actions[bot]' &&
+      contains(github.event.head_commit.message, 'ci: inspect fixed main workflow')
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+        with:
+          ref: future/1785754980/refine-region-shapes-and-focus-scale
+          fetch-depth: 0
+
+      - name: Read target workflow status
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TARGET_SHA: bad7e358b3027c8714b0ee7df6ef8221bba16882
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          import subprocess
+          import time
+
+          repo = os.environ['GITHUB_REPOSITORY']
+          target_sha = os.environ['TARGET_SHA']
+
+          def gh(path):
+              return json.loads(subprocess.check_output(['gh', 'api', path], text=True))
+
+          selected = None
+          for _ in range(60):
+              runs = gh(f'/repos/{repo}/actions/runs?head_sha={target_sha}&per_page=30')
+              matches = [
+                  run for run in runs.get('workflow_runs', [])
+                  if run.get('name') == 'Verify and Deploy Data Insight Dashboard'
+              ]
+              if matches:
+                  selected = sorted(matches, key=lambda run: run['id'], reverse=True)[0]
+                  if selected.get('status') == 'completed':
+                      break
+              time.sleep(10)
+
+          if not selected:
+              output = {
+                  'target_sha': target_sha,
+                  'error': 'No matching workflow run found',
+              }
+          else:
+              jobs_payload = gh(f"/repos/{repo}/actions/runs/{selected['id']}/jobs?per_page=100")
+              output = {
+                  'target_sha': target_sha,
+                  'run': {
+                      key: selected.get(key)
+                      for key in (
+                          'id', 'run_number', 'event', 'status', 'conclusion',
+                          'head_branch', 'head_sha', 'html_url', 'created_at',
+                          'updated_at',
+                      )
+                  },
+                  'jobs': [
+                      {
+                          'id': job.get('id'),
+                          'name': job.get('name'),
+                          'status': job.get('status'),
+                          'conclusion': job.get('conclusion'),
+                          'html_url': job.get('html_url'),
+                          'steps': [
+                              {
+                                  'number': step.get('number'),
+                                  'name': step.get('name'),
+                                  'status': step.get('status'),
+                                  'conclusion': step.get('conclusion'),
+                              }
+                              for step in job.get('steps', [])
+                          ],
+                      }
+                      for job in jobs_payload.get('jobs', [])
+                  ],
+              }
+
+          with open('.actions-status.json', 'w', encoding='utf-8') as handle:
+              json.dump(output, handle, ensure_ascii=False, indent=2)
+              handle.write('\n')
+          PY
+          cat .actions-status.json
+
+      - name: Commit status snapshot
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add .actions-status.json
+          git commit -m 'ci: record fixed workflow status [skip ci]'
+          git push origin HEAD:future/1785754980/refine-region-shapes-and-focus-scale
