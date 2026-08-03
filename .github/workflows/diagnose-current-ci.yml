@@ -14,7 +14,7 @@ jobs:
       github.actor != 'github-actions[bot]' &&
       contains(github.event.head_commit.message, 'ci: diagnose current workflow failure')
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 20
     steps:
       - name: Checkout branch
         uses: actions/checkout@v4
@@ -31,7 +31,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Capture lint and unit test results
+      - name: Capture remaining verification results
         shell: bash
         run: |
           set +e
@@ -50,7 +50,31 @@ jobs:
             echo
             echo "UNIT_EXIT=$unit_status"
             echo
-            echo "OVERALL_EXIT=$(( lint_status != 0 || unit_status != 0 ))"
+            echo '## Build'
+            npm run build
+            build_status=$?
+            echo
+            echo "BUILD_EXIT=$build_status"
+            echo
+            echo '## Verify build'
+            npm run verify:build
+            verify_status=$?
+            echo
+            echo "VERIFY_BUILD_EXIT=$verify_status"
+            echo
+            echo '## Install Chromium'
+            npx playwright install --with-deps chromium
+            chromium_status=$?
+            echo
+            echo "CHROMIUM_EXIT=$chromium_status"
+            echo
+            echo '## Browser tests'
+            npm run test:e2e
+            e2e_status=$?
+            echo
+            echo "E2E_EXIT=$e2e_status"
+            echo
+            echo "OVERALL_EXIT=$(( lint_status != 0 || unit_status != 0 || build_status != 0 || verify_status != 0 || chromium_status != 0 || e2e_status != 0 ))"
           } > .ci-diagnostic.txt 2>&1
           cat .ci-diagnostic.txt
           exit 0
@@ -60,5 +84,5 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add .ci-diagnostic.txt
-          git commit -m 'ci: record workflow diagnostic [skip ci]'
+          git commit -m 'ci: record extended workflow diagnostic [skip ci]'
           git push origin HEAD:future/1785754980/refine-region-shapes-and-focus-scale
