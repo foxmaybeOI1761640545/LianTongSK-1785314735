@@ -31,7 +31,9 @@ try {
   await page.getByText('仅覆盖广东侧样本用户访问香港网络', { exact: true }).waitFor()
   await page.locator('[data-kpi="users"]').getByText('2,177', { exact: true }).waitFor()
   await page.locator('[data-kpi="recall"]').getByText('504', { exact: true }).waitFor()
-  await page.locator('[data-kpi="concentration"]').getByText('90.44%', { exact: true }).waitFor()
+  await page.locator('[data-kpi="concentration"]')
+    .getByText('90.44%', { exact: true })
+    .waitFor()
 
   const firstMaskedPhone = await page
     .locator('[data-testid="high-value-ranking"] .rank-main strong')
@@ -54,17 +56,22 @@ try {
   if (await page.locator('canvas').count() < 2) {
     throw new Error('Expected at least 2 ECharts canvases')
   }
+  if (await page.locator('[data-region-shape="guangdong"] path').count() < 3) {
+    throw new Error('Expected the simplified Guangdong silhouette')
+  }
+  if (await page.locator('[data-region-shape="hong-kong"] path').count() < 6) {
+    throw new Error('Expected the multipart Hong Kong silhouette')
+  }
 
-  const panel = page.locator('[data-detail-id="flow-topology"]')
-  const originalRect = await panel.evaluate((element) => {
+  const referencePanel = page.locator('[data-detail-id="flow-topology"]')
+  const referenceBefore = await referencePanel.evaluate((element) => {
     const rect = element.getBoundingClientRect()
     return { width: rect.width, height: rect.height, text: element.textContent }
   })
 
-  await panel.dblclick()
+  await referencePanel.dblclick()
   await page.getByTestId('panel-focus-layer').waitFor()
-  const focused = page.getByTestId('focused-panel')
-  const focusedRect = await focused.evaluate((element) => {
+  const referenceAfter = await page.getByTestId('focused-panel').evaluate((element) => {
     const rect = element.getBoundingClientRect()
     const host = element.closest('[data-testid="panel-focus-layer"]')
     return {
@@ -75,15 +82,58 @@ try {
     }
   })
 
-  if (!(focusedRect.scale > 1)) throw new Error('Expected focused panel scale to be greater than 1')
-  if (Math.abs(focusedRect.width - originalRect.width * focusedRect.scale) > 2) {
-    throw new Error('Focused panel width does not match the calculated scale')
+  if (!(referenceAfter.scale > 1)) {
+    throw new Error('Expected the flow topology focus scale to be greater than 1')
   }
-  if (Math.abs(focusedRect.height - originalRect.height * focusedRect.scale) > 2) {
-    throw new Error('Focused panel height does not match the calculated scale')
+  if (Math.abs(referenceAfter.width - referenceBefore.width * referenceAfter.scale) > 2) {
+    throw new Error('Reference panel width does not match its calculated scale')
   }
-  if (focusedRect.text !== originalRect.text) {
+  if (Math.abs(referenceAfter.height - referenceBefore.height * referenceAfter.scale) > 2) {
+    throw new Error('Reference panel height does not match its calculated scale')
+  }
+
+  await page.keyboard.press('Escape')
+  await page.getByTestId('panel-focus-layer').waitFor({ state: 'hidden' })
+
+  const trendPanel = page.locator('[data-detail-id="traffic-trend"]')
+  const trendBefore = await trendPanel.evaluate((element) => {
+    const rect = element.getBoundingClientRect()
+    return {
+      width: rect.width,
+      height: rect.height,
+      text: element.textContent,
+      canvasCount: element.querySelectorAll('canvas').length,
+    }
+  })
+
+  await trendPanel.dblclick()
+  await page.getByTestId('panel-focus-layer').waitFor()
+  const trendAfter = await page.getByTestId('focused-panel').evaluate((element) => {
+    const rect = element.getBoundingClientRect()
+    const host = element.closest('[data-testid="panel-focus-layer"]')
+    return {
+      width: rect.width,
+      height: rect.height,
+      text: element.textContent,
+      canvasCount: element.querySelectorAll('canvas').length,
+      scale: Number(host?.style.getPropertyValue('--panel-focus-scale')),
+    }
+  })
+
+  if (Math.abs(trendAfter.scale - referenceAfter.scale) > 0.00001) {
+    throw new Error('Focused panels do not share the flow topology scale')
+  }
+  if (Math.abs(trendAfter.width - trendBefore.width * referenceAfter.scale) > 2) {
+    throw new Error('Trend panel width does not use the shared scale')
+  }
+  if (Math.abs(trendAfter.height - trendBefore.height * referenceAfter.scale) > 2) {
+    throw new Error('Trend panel height does not use the shared scale')
+  }
+  if (trendAfter.text !== trendBefore.text) {
     throw new Error('Focused panel content changed during proportional scaling')
+  }
+  if (trendAfter.canvasCount !== trendBefore.canvasCount) {
+    throw new Error('Focused panel chart content changed during proportional scaling')
   }
 
   await page.keyboard.press('Escape')

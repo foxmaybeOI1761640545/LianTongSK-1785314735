@@ -1,5 +1,17 @@
 <script setup>
-import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import {
+  computed,
+  nextTick,
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  watch,
+} from 'vue'
+import {
+  PANEL_FOCUS_REFERENCE_ID,
+  setSharedPanelFocusScale,
+  sharedPanelFocusScale,
+} from '../composables/usePanelFocusScale.js'
 
 const props = defineProps({
   title: { type: String, required: true },
@@ -10,12 +22,18 @@ const props = defineProps({
   focused: { type: Boolean, default: false },
   focusMaxWidth: { type: Number, default: 1280 },
   focusMaxHeight: { type: Number, default: 760 },
+  focusScaleReferenceId: { type: String, default: PANEL_FOCUS_REFERENCE_ID },
 })
 
 const emit = defineEmits(['open-detail', 'close-detail'])
 const panelElement = ref(null)
 const originalSize = ref({ width: 0, height: 0 })
 const viewportSize = ref({ width: 0, height: 0 })
+let resizeObserver = null
+
+const isScaleReference = computed(
+  () => props.detailId === props.focusScaleReferenceId,
+)
 
 function updateViewportSize() {
   viewportSize.value = {
@@ -24,18 +42,58 @@ function updateViewportSize() {
   }
 }
 
-function calculateScale(size = originalSize.value) {
-  const safeWidth = Math.max(Number(size.width) || 0, 1)
-  const safeHeight = Math.max(Number(size.height) || 0, 1)
-  const availableWidth = Math.max(280, Math.min(props.focusMaxWidth, viewportSize.value.width - 96))
-  const availableHeight = Math.max(220, Math.min(props.focusMaxHeight, viewportSize.value.height - 96))
-  return Math.max(1, Math.min(availableWidth / safeWidth, availableHeight / safeHeight))
+function calculateScale(size) {
+  const safeWidth = Math.max(Number(size?.width) || 0, 1)
+  const safeHeight = Math.max(Number(size?.height) || 0, 1)
+  const availableWidth = Math.max(
+    280,
+    Math.min(props.focusMaxWidth, viewportSize.value.width - 96),
+  )
+  const availableHeight = Math.max(
+    220,
+    Math.min(props.focusMaxHeight, viewportSize.value.height - 96),
+  )
+
+  return Math.max(
+    1,
+    Math.min(availableWidth / safeWidth, availableHeight / safeHeight),
+  )
+}
+
+function readReferenceScale() {
+  if (sharedPanelFocusScale.value >= 1) return sharedPanelFocusScale.value
+
+  const referenceElement = globalThis.document?.querySelector(
+    `[data-detail-id="${props.focusScaleReferenceId}"]`,
+  )
+  const rect = referenceElement?.getBoundingClientRect()
+  if (!rect?.width || !rect?.height) return 0
+
+  const scale = calculateScale(rect)
+  setSharedPanelFocusScale(scale)
+  return scale
+}
+
+function resolvedScale(size = originalSize.value) {
+  return readReferenceScale() || calculateScale(size)
+}
+
+async function measureReferenceScale() {
+  if (!isScaleReference.value || props.focused) return
+
+  updateViewportSize()
+  await nextTick()
+
+  const rect = panelElement.value?.getBoundingClientRect()
+  if (!rect?.width || !rect?.height) return
+
+  setSharedPanelFocusScale(calculateScale(rect))
 }
 
 const focusStyle = computed(() => ({
   '--panel-focus-width': `${originalSize.value.width}px`,
   '--panel-focus-height': `${originalSize.value.height}px`,
-  '--panel-focus-scale': String(calculateScale()),
+  '--panel-focus-scale': String(resolvedScale()),
 }))
 
 const placeholderStyle = computed(() => ({
@@ -56,12 +114,13 @@ function openDetail(event) {
   updateViewportSize()
   const size = { width: rect.width, height: rect.height }
   originalSize.value = size
+  const scale = resolvedScale(size)
 
   emit('open-detail', {
     target: props.detailId,
     mode: 'panel-scale',
     origin: { x: event.clientX, y: event.clientY },
-    panel: { ...size, scale: calculateScale(size) },
+    panel: { ...size, scale },
   })
 }
 
@@ -70,23 +129,43 @@ function closeDetail(event) {
   emit('close-detail')
 }
 
-function handleResize() {
+async function handleResize() {
   updateViewportSize()
+  await measureReferenceScale()
 }
 
-watch(() => props.focused, async (focused) => {
-  if (!focused) return
-  updateViewportSize()
-  await nextTick()
-  panelElement.value?.focus({ preventScroll: true })
-})
+watch(
+  () => props.focused,
+  async (focused) => {
+    if (focused) {
+      updateViewportSize()
+      await nextTick()
+      panelElement.value?.focus({ preventScroll: true })
+      return
+    }
 
-onMounted(() => {
+    await measureReferenceScale()
+  },
+)
+
+onMounted(async () => {
   updateViewportSize()
+  await measureReferenceScale()
+
+  if (isScaleReference.value && globalThis.ResizeObserver) {
+    resizeObserver = new globalThis.ResizeObserver(() => {
+      void measureReferenceScale()
+    })
+    if (panelElement.value) resizeObserver.observe(panelElement.value)
+  }
+
   globalThis.addEventListener('resize', handleResize)
 })
 
-onBeforeUnmount(() => globalThis.removeEventListener('resize', handleResize))
+onBeforeUnmount(() => {
+  resizeObserver?.disconnect()
+  globalThis.removeEventListener('resize', handleResize)
+})
 </script>
 
 <template>
@@ -123,6 +202,7 @@ onBeforeUnmount(() => globalThis.removeEventListener('resize', handleResize))
             'is-panel-focused': focused,
           }"
           :data-detail-id="detailId || undefined"
+          :data-focus-scale-reference="isScaleReference || undefined"
           :data-testid="focused ? 'focused-panel' : undefined"
           :tabindex="focused ? -1 : undefined"
           @dblclick.stop="openDetail"
@@ -148,7 +228,9 @@ onBeforeUnmount(() => globalThis.removeEventListener('resize', handleResize))
         class="panel-focus-close"
         aria-label="关闭等比放大面板"
         @click="closeDetail"
-      >×</button>
+      >
+        ×
+      </button>
     </div>
   </Teleport>
 </template>
