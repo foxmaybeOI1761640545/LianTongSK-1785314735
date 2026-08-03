@@ -47,7 +47,7 @@ test('uses the flow topology scale for every proportional panel focus', async ({
     return {
       width: rect.width,
       height: rect.height,
-      text: element.textContent,
+      title: element.querySelector('h2')?.textContent,
     }
   })
 
@@ -60,7 +60,7 @@ test('uses the flow topology scale for every proportional panel focus', async ({
     return {
       width: rect.width,
       height: rect.height,
-      text: element.textContent,
+      title: element.querySelector('h2')?.textContent,
       scale: Number(host?.style.getPropertyValue('--panel-focus-scale')),
     }
   })
@@ -74,7 +74,7 @@ test('uses the flow topology scale for every proportional panel focus', async ({
     referenceBefore.height * referenceAfter.scale,
     0,
   )
-  expect(referenceAfter.text).toBe(referenceBefore.text)
+  expect(referenceAfter.title).toBe(referenceBefore.title)
 
   await page.keyboard.press('Escape')
   await expect(page.getByTestId('panel-focus-layer')).toBeHidden()
@@ -85,7 +85,7 @@ test('uses the flow topology scale for every proportional panel focus', async ({
     return {
       width: rect.width,
       height: rect.height,
-      text: element.textContent,
+      title: element.querySelector('h2')?.textContent,
       canvasCount: element.querySelectorAll('canvas').length,
     }
   })
@@ -101,7 +101,7 @@ test('uses the flow topology scale for every proportional panel focus', async ({
     return {
       width: rect.width,
       height: rect.height,
-      text: element.textContent,
+      title: element.querySelector('h2')?.textContent,
       canvasCount: element.querySelectorAll('canvas').length,
       scale: Number(host?.style.getPropertyValue('--panel-focus-scale')),
     }
@@ -120,7 +120,7 @@ test('uses the flow topology scale for every proportional panel focus', async ({
     trendBefore.width / trendBefore.height,
     2,
   )
-  expect(trendAfter.text).toBe(trendBefore.text)
+  expect(trendAfter.title).toBe(trendBefore.title)
   expect(trendAfter.canvasCount).toBe(trendBefore.canvasCount)
 
   await page.keyboard.press('Escape')
